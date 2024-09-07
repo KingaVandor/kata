@@ -2,15 +2,16 @@ package com.example.shoppingbasket.services
 
 import com.example.shoppingbasket.models.BasketUpdateRequest
 import com.example.shoppingbasket.models.Item
+import com.example.shoppingbasket.models.Product
 import org.springframework.stereotype.Component
 
 @Component
 class BasketService  {
     val basketMap = mutableMapOf<Long, MutableMap<Int, Int>>()
+    val productMap = mutableMapOf<Int, Product>()
 
     fun addItemToBasket(request: BasketUpdateRequest): List<Item> {
-        val productCode = request.product.productCode
-
+        val productCode = upsertProductInCache(request.product)
         synchronized(this) {
             val existingBasket = basketMap[request.sessionId]
             if (existingBasket.isNullOrEmpty()) basketMap[request.sessionId] = mutableMapOf(productCode to request.count)
@@ -46,6 +47,12 @@ class BasketService  {
         ?.entries
         ?.map { Item(it.key, it.value) }
         ?.toList() ?: emptyList()
+    private fun upsertProductInCache(product: Product): Int {
+        synchronized(this) {
+            productMap[product.productCode] = product
+        }
+        return product.productCode
+    }
 }
 
 
