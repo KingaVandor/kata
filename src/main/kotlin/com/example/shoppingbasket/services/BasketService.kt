@@ -1,5 +1,7 @@
 package com.example.shoppingbasket.services
 
+import com.example.shoppingbasket.models.BasketUpdateRequest
+import com.example.shoppingbasket.models.Item
 import org.springframework.stereotype.Component
 
 @Component
@@ -46,19 +48,4 @@ class BasketService  {
         ?.toList() ?: emptyList()
 }
 
-data class Product(
-    val productCode: Int,
-    val productName: String,
-    val price: Double,
-)
 
-data class Item(
-    val productCode: Int,
-    val count: Int,
-)
-
-data class BasketUpdateRequest(
-    val sessionId: Long,
-    val product: Product,
-    val count: Int
-)

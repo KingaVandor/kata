@@ -1,5 +1,8 @@
 package com.example.shoppingbasket.services
 
+import com.example.shoppingbasket.models.BasketUpdateRequest
+import com.example.shoppingbasket.models.Item
+import com.example.shoppingbasket.models.Product
 import org.junit.jupiter.api.Assertions.*
 import kotlin.test.Test
 
