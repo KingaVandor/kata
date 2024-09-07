@@ -6,34 +6,34 @@ import org.springframework.stereotype.Component
 class BasketService  {
     val basketMap = mutableMapOf<Long, MutableMap<Int, Int>>()
 
-    fun addItemToBasket(sessionId: Long, product: Product, count: Int) {
-        val productCode = product.productCode
+    fun addItemToBasket(request: BasketUpdateRequest) {
+        val productCode = request.product.productCode
 
         synchronized(this) {
-            val existingBasket = basketMap[sessionId]
+            val existingBasket = basketMap[request.sessionId]
 
-            if (existingBasket.isNullOrEmpty()) basketMap[sessionId] = mutableMapOf(productCode to count)
+            if (existingBasket.isNullOrEmpty()) basketMap[request.sessionId] = mutableMapOf(productCode to request.count)
             else {
-                val newCount = existingBasket[productCode]?.plus(count) ?: count
+                val newCount = existingBasket[productCode]?.plus(request.count) ?: request.count
                 existingBasket[productCode] = newCount
-                basketMap[sessionId] = existingBasket
+                basketMap[request.sessionId] = existingBasket
             }
         }
     }
-    fun removeItemFromBasket(sessionId: Long, product: Product, count: Int) {
-        val productCode = product.productCode
+    fun removeItemFromBasket(request: BasketUpdateRequest) {
+        val productCode = request.product.productCode
 
         synchronized(this) {
-            val existingBasket = basketMap[sessionId] ?: return
+            val existingBasket = basketMap[request.sessionId] ?: return
             val productCountInBasket = existingBasket[productCode] ?: return
 
-            if ((productCountInBasket - count) <= 0) {
+            if ((productCountInBasket - request.count) <= 0) {
                 existingBasket.remove(productCode)
                 // if that was the last item, remove basket entirely
-                if (basketMap[sessionId].isNullOrEmpty()) basketMap.remove(sessionId)
+                if (basketMap[request.sessionId].isNullOrEmpty()) basketMap.remove(request.sessionId)
             } else {
-                existingBasket[productCode] = productCountInBasket - count
-                basketMap[sessionId] = existingBasket
+                existingBasket[productCode] = productCountInBasket - request.count
+                basketMap[request.sessionId] = existingBasket
             }
         }
     }
@@ -44,4 +44,10 @@ data class Product(
     val productCode: Int,
     val productName: String,
     val price: Double,
+)
+
+data class BasketUpdateRequest(
+    val sessionId: Long,
+    val product: Product,
+    val count: Int
 )
