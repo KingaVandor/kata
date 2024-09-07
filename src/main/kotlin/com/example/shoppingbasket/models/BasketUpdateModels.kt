@@ -1,9 +1,11 @@
 package com.example.shoppingbasket.models
 
+import java.math.BigDecimal
+
 data class Product(
     val productCode: Int,
     val productName: String,
-    val price: Double,
+    val price: BigDecimal,
 )
 
 data class Register(
@@ -25,5 +27,5 @@ data class BasketItem(
 data class Checkout(
     val allItemsInBasket: List<BasketItem>,
     val itemsToPayFor: List<BasketItem>,
-    val finalPriceIncludingDiscount: Double
+    val finalPriceIncludingDiscount: BigDecimal
 )

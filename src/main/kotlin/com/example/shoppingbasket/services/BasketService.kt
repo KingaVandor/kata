@@ -5,6 +5,7 @@ import com.example.shoppingbasket.models.BasketUpdateRequest
 import com.example.shoppingbasket.models.Checkout
 import com.example.shoppingbasket.models.Register
 import com.example.shoppingbasket.models.Product
+import java.math.BigDecimal
 import org.springframework.stereotype.Component
 
 @Component
@@ -53,7 +54,8 @@ class BasketService {
 
         val allItemsInBasket = basket.entries.mapNotNull { entry -> productMap[entry.key]?.let { BasketItem(it, entry.value) } }
         val itemsToPayFor = allItemsInBasket.map { item -> BasketItem(item.product, getDiscountedCount(item.quantity)) }
-        val finalPriceIncludingDiscount: Double = itemsToPayFor.map { item -> item.product.price * item.quantity }.fold(0.0) { acc, next -> acc + next }
+        val finalPriceIncludingDiscount: BigDecimal = itemsToPayFor.map { item -> item.product.price.multiply(item.quantity.toBigDecimal()) }.fold(
+            BigDecimal.ZERO) { acc, next -> acc + next }
 
         return Checkout(allItemsInBasket, itemsToPayFor, finalPriceIncludingDiscount)
     }

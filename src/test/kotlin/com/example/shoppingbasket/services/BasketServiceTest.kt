@@ -2,17 +2,17 @@ package com.example.shoppingbasket.services
 
 import com.example.shoppingbasket.models.BasketItem
 import com.example.shoppingbasket.models.BasketUpdateRequest
-import com.example.shoppingbasket.models.Checkout
 import com.example.shoppingbasket.models.Register
 import com.example.shoppingbasket.models.Product
+import java.math.BigDecimal
 import org.junit.jupiter.api.Assertions.*
 import kotlin.test.Test
 
 class BasketServiceTest {
     private val sut = BasketService()
 
-    private val productMilk = Product(11, "milk", 1.4)
-    private val productEgg = Product(22, "eggs", 2.3)
+    private val productMilk = Product(11, "milk", BigDecimal.valueOf(1.4))
+    private val productEgg = Product(22, "eggs", BigDecimal.valueOf(2.3))
 
     @Test
     fun addOneItem() {
@@ -113,19 +113,15 @@ class BasketServiceTest {
 
     @Test
     fun checkoutExistingBasket() {
-        sut.addItemToBasket(BasketUpdateRequest(1, productMilk, 3))
-        sut.addItemToBasket(BasketUpdateRequest(1, productMilk, 2))
+        sut.addItemToBasket(BasketUpdateRequest(1, productMilk, 5))
         sut.addItemToBasket(BasketUpdateRequest(1, productEgg, 2))
 
         val actual = sut.calculateCheckout(1)
-        val expected = Checkout(
-            allItemsInBasket = listOf(BasketItem(productMilk, 5), BasketItem(productEgg, 2)),
-            itemsToPayFor = listOf(BasketItem(productMilk, 3), BasketItem(productEgg, 1)),
-            finalPriceIncludingDiscount = 6.5
-        )
 
-        assertEquals(expected, actual)
-
+        assertNotNull(actual)
+        assertEquals(listOf(BasketItem(productMilk, 5), BasketItem(productEgg, 2)), actual!!.allItemsInBasket)
+        assertEquals(listOf(BasketItem(productMilk, 3), BasketItem(productEgg, 1)), actual.itemsToPayFor)
+        assertEquals(BigDecimal.valueOf(6.5), actual.finalPriceIncludingDiscount)
     }
 
     @Test
