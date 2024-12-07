@@ -481,12 +481,59 @@ C   C
         )
     }
 
+    @Test
+    fun wordWrapper() {
+        assertEquals(
+            """
+                      The function
+                      returns the
+                      string
+        """.trimIndent(), sut.wordWrapper("The function returns the string", 15)
+        )
+        assertEquals(
+            """
+                      The function returns
+                      the string
+        """.trimIndent(), sut.wordWrapper("The function returns the string", 20)
+        )
+        assertEquals(
+            """
+                      The function returns the string
+        """.trimIndent(), sut.wordWrapper("The function returns the string", 40)
+        )
+    }
+
+    @Test
+    fun unSplice() {
+        assertEquals("abcdef", sut.unSplice("abcdef"))
+        assertEquals("abcdef", sut.unSplice("abc\\\ndef"))
+        assertEquals("abcdef", sut.unSplice("ab\\\ncd\\\nef"))
+        assertEquals("abc\n\\def", sut.unSplice("abc\n\\def"))
+        assertEquals("abc\\def", sut.unSplice("abc\\def"))
+        assertEquals("abc\ndef", sut.unSplice("abc\ndef"))
+    }
+
+    @Test
+    fun tinyMaze() {
+        assertEquals("""
+            [[:S x 1]
+            [1  x :E]]
+""".trimIndent(), sut.tinyMaze("""
+    [[:S 0 1]
+    [1  0 :E]]
+""".trimIndent()))
+    }
+
 
 }
 
-//The function returns the string, but with line breaks inserted at just the right places to make sure that no line is longer than the column number. You try to break lines at word boundaries.
-
-
+//[[:S 0 1]
+//[1  0 1]
+//[1  0 :E]]
+//
+//[[:S x 1]
+//[1  x 1]
+//[1  x :E]]
 
 //100 doors             -- done
 //12 Days of Xmas       -- done
@@ -541,10 +588,10 @@ C   C
 //Saddle Points
 //Tennis
 //Tiny Maze
-//Unsplice
+//Unsplice              -- done
 //Vending Machine
 //Wonderland Number
-//Word Wrap
+//Word Wrap             -- done
 //Yatzy
 //Yatzy Cutdown
 //Zeckendorf Number

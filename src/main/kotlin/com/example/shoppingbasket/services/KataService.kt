@@ -571,11 +571,7 @@ class KataService {
                             if ((row + r in 0..<rows) && (col + c in 0..<cols) && !(c == 0 && r == 0)) {
                                 val currentVal = field[r + row][c + col]
                                 if (currentVal == '*') continue
-                                field[row + r] = field[row + r].replaceRange(
-                                    c + col,
-                                    c + col + 1,
-                                    (currentVal.toString().toInt() + 1).toString()
-                                )
+                                field[row + r] = field[row + r].replaceRange(c + col, c + col + 1,(currentVal.toString().toInt() + 1).toString())
                             }
                         }
                     }
@@ -589,6 +585,48 @@ class KataService {
                 appendLine()
             }
         }.dropLast(1)
+    }
+
+    fun wordWrapper(s: String, max: Int): String {
+        val wordsList = s.split(" ")
+        val builder: StringBuilder = StringBuilder(s.length * 10)
+        var current = ""
+
+        for (i in wordsList.indices) {
+            if ((current.length + wordsList[i].length) > max) {
+                builder.append(current.trim())
+                builder.appendLine()
+                current = "${wordsList[i]} "
+
+                if (i == wordsList.size - 1) {
+                    builder.append(current.trim())
+                }
+            } else {
+                current += "${wordsList[i]} "
+                if (i == wordsList.size - 1) {
+                    builder.append(current.trim())
+                }
+            }
+        }
+        return builder.toString()
+    }
+
+    fun unSplice(s: String): String {
+        return s.replace("\\\n", "")
+    }
+
+    fun tinyMaze(s: String): String {
+        val maze = s.replace("[", "").replace("]", "").replace(":", "").replace(" ", "").split("\n")
+        lateinit var path: String
+       // println(maze)
+
+        for (row in maze.indices)
+        {
+            for (pos in maze[row]) {
+
+            }
+        }
+        return s
     }
 
 
