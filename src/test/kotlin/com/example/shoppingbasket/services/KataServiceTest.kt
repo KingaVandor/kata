@@ -516,11 +516,27 @@ C   C
     @Test
     fun tinyMaze() {
         assertEquals("""
-            [[:S x 1]
-            [1  x :E]]
+            Sx1
+            1xE
 """.trimIndent(), sut.tinyMaze("""
     [[:S 0 1]
-    [1  0 :E]]
+    [1 0 :E]]
+""".trimIndent()))
+
+        assertEquals("no way out", sut.tinyMaze("""
+    [[:S 0 1]
+    [[1 1 1]
+    [1 0 :E]]
+""".trimIndent()))
+
+        assertEquals("""
+            Sx1
+            1x1
+            1xE
+""".trimIndent(), sut.tinyMaze("""
+    [[:S 0 1]
+    [[1 0 1]
+    [1 0 :E]]
 """.trimIndent()))
     }
 

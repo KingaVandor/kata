@@ -215,11 +215,7 @@ class KataService {
         while (remainder > 0) {
             for (entry in numMap) {
                 if (remainder >= entry.key) {
-                    answ += getAnd(prev, entry.key) + getTimes(
-                        remainder,
-                        entry.key,
-                        numMap
-                    ) + numMap[entry.key] + getComma(entry.key) + " "
+                    answ += getAnd(prev, entry.key) + getTimes(remainder, entry.key, numMap) + numMap[entry.key] + getComma(entry.key) + " "
                     remainder %= entry.key
                     prev = entry.key
                 }
@@ -241,7 +237,7 @@ class KataService {
     }
 
     private fun getTimes(remainder: Int, key: Int, numMap: Map<Int, String>): String {
-        return if (key < 100 && remainder / key == 1) return ""
+        return if (key < 100 && remainder / key == 1) ""
         else {
             numMap[remainder / key]?.let { "$it " } ?: (spellOut(remainder / key) + " ")
         }
@@ -616,17 +612,49 @@ class KataService {
     }
 
     fun tinyMaze(s: String): String {
-        val maze = s.replace("[", "").replace("]", "").replace(":", "").replace(" ", "").split("\n")
-        lateinit var path: String
-       // println(maze)
+        val maze: List<String> = s.replace("[", "").replace("]", "").replace(":", "").replace(" ", "").split("\n")
+        val path = getPath(Pair(0, 0), maze).toList()
 
-        for (row in maze.indices)
-        {
-            for (pos in maze[row]) {
+        return if (path.isEmpty()) "no way out"
+        else buildString {
+            path.forEach {
+                append(it)
+                appendLine()
+            }
+        }.dropLast(1)
+    }
 
+    private fun getPath(start: Pair<Int, Int>, maze: List<String>): MutableList<String> {
+        var path = emptyList<String>().toMutableList()
+        val newMaze = maze.toMutableList()
+
+        for (direction in listOf(Direction.RIGHT, Direction.DOWN, Direction.LEFT, Direction.UP)) {
+            if (path.isNotEmpty()) break
+            val nextRow = start.first + direction.row
+            val nextCol = start.second + direction.col
+
+            path = when (getNextIfInRange(Pair(nextRow, nextCol), maze)) {
+                '0' -> {
+                    val newRow: String = maze[nextRow].replaceRange(nextCol, nextCol + 1, 'x'.toString())
+                    newMaze[nextRow] = newRow
+                    getPath(Pair(nextRow, start.second + direction.col), newMaze)
+                }
+
+                'E' -> maze.toMutableList()
+                else -> emptyList<String>().toMutableList()
             }
         }
-        return s
+        return path
+    }
+
+    private fun getNextIfInRange(next: Pair<Int, Int>, maze: List<String>): Char? {
+        val rowNum = maze.size
+        val colNum = maze[0].length
+        return if((next.first >= rowNum || next.second >= colNum)
+            || (next.first < 0 || next.second < 0)) {
+            null
+        }
+        else maze[next.first][next.second]
     }
 
 
@@ -746,6 +774,10 @@ enum class Month {
 
 enum class Door {
     CLOSED, OPEN,
+}
+
+enum class Direction(val row: Int, val col: Int) {
+    UP(-1, 0), DOWN(1, 0), LEFT(0, -1), RIGHT(0, 1)
 }
 
 
