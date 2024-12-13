@@ -215,7 +215,11 @@ class KataService {
         while (remainder > 0) {
             for (entry in numMap) {
                 if (remainder >= entry.key) {
-                    answ += getAnd(prev, entry.key) + getTimes(remainder, entry.key, numMap) + numMap[entry.key] + getComma(entry.key) + " "
+                    answ += getAnd(prev, entry.key) + getTimes(
+                        remainder,
+                        entry.key,
+                        numMap
+                    ) + numMap[entry.key] + getComma(entry.key) + " "
                     remainder %= entry.key
                     prev = entry.key
                 }
@@ -567,7 +571,11 @@ class KataService {
                             if ((row + r in 0..<rows) && (col + c in 0..<cols) && !(c == 0 && r == 0)) {
                                 val currentVal = field[r + row][c + col]
                                 if (currentVal == '*') continue
-                                field[row + r] = field[row + r].replaceRange(c + col, c + col + 1,(currentVal.toString().toInt() + 1).toString())
+                                field[row + r] = field[row + r].replaceRange(
+                                    c + col,
+                                    c + col + 1,
+                                    (currentVal.toString().toInt() + 1).toString()
+                                )
                             }
                         }
                     }
@@ -650,11 +658,40 @@ class KataService {
     private fun getNextIfInRange(next: Pair<Int, Int>, maze: List<String>): Char? {
         val rowNum = maze.size
         val colNum = maze[0].length
-        return if((next.first >= rowNum || next.second >= colNum)
-            || (next.first < 0 || next.second < 0)) {
+        return if ((next.first >= rowNum || next.second >= colNum)
+            || (next.first < 0 || next.second < 0)
+        ) {
             null
+        } else maze[next.first][next.second]
+    }
+
+    fun saddlePoints(arr: Array<Array<Int>>): List<Int> {
+        val rowMaxes = emptyMap<Int, Int>().toMutableMap()
+        arr.toList().mapIndexed { index, list -> rowMaxes[index] = list.max() }
+
+        val colMins = emptyMap<Int, Int>().toMutableMap()
+        val rows = arr.size
+        val cols = arr[0].size
+        for (col in 0..<cols) {
+            var colMin = rowMaxes.maxOf { it.value }
+            for (row in 0..<rows) {
+                if (arr[row][col] < colMin) colMin = arr[row][col]
+            }
+            colMins[col] = colMin
         }
-        else maze[next.first][next.second]
+
+        val saddlePoints = emptyList<Int>().toMutableList()
+        for (row in 0..<rows) {
+            for (col in 0..<cols) {
+                val currentVal = arr[row][col]
+                if (currentVal >= (rowMaxes[row] ?: 0) && currentVal <= (colMins[col] ?: 0)
+                ) {
+                    saddlePoints.add(arr[row][col])
+                }
+            }
+        }
+        return saddlePoints
+
     }
 
 
@@ -721,7 +758,8 @@ class KataService {
 ////        }
 //        return Score(hand.first, Hands.HIGH, hand.second[0].longName, null)
 //    }
-}
+    }
+
 
 //data class Score(
 //    val player: Player,
@@ -730,7 +768,7 @@ class KataService {
 //    val value: Int?,
 //)
 
-//enum class Hands(val longName: String) {
+    //enum class Hands(val longName: String) {
 //    TIE("Tie"),
 //    STRAIGHT_FLUSH("Straight Flush"),
 //    FOUR("Four of a Kind"),
@@ -764,21 +802,21 @@ class KataService {
 //    ACE(10, "Ace", "A"),
 //}
 //
-enum class WeekDay {
-    MONDAY, TUESDAY, WEDNESDAY, THURSDAY, FRIDAY, SATURDAY, SUNDAY
-}
+    enum class WeekDay {
+        MONDAY, TUESDAY, WEDNESDAY, THURSDAY, FRIDAY, SATURDAY, SUNDAY
+    }
 
-enum class Month {
-    JANUARY, FEBRUARY, MARCH, APRIL, MAY, JUNE, JULY, AUGUST, SEPT, OCT, NOV, DEC
-}
+    enum class Month {
+        JANUARY, FEBRUARY, MARCH, APRIL, MAY, JUNE, JULY, AUGUST, SEPT, OCT, NOV, DEC
+    }
 
-enum class Door {
-    CLOSED, OPEN,
-}
+    enum class Door {
+        CLOSED, OPEN,
+    }
 
-enum class Direction(val row: Int, val col: Int) {
-    UP(-1, 0), DOWN(1, 0), LEFT(0, -1), RIGHT(0, 1)
-}
+    enum class Direction(val row: Int, val col: Int) {
+        UP(-1, 0), DOWN(1, 0), LEFT(0, -1), RIGHT(0, 1)
+    }
 
 
 

@@ -515,41 +515,71 @@ C   C
 
     @Test
     fun tinyMaze() {
-        assertEquals("""
+        assertEquals(
+            """
             Sx1
             1xE
-""".trimIndent(), sut.tinyMaze("""
+""".trimIndent(), sut.tinyMaze(
+                """
     [[:S 0 1]
     [1 0 :E]]
-""".trimIndent()))
+""".trimIndent()
+            )
+        )
 
-        assertEquals("no way out", sut.tinyMaze("""
+        assertEquals(
+            "no way out", sut.tinyMaze(
+                """
     [[:S 0 1]
     [[1 1 1]
     [1 0 :E]]
-""".trimIndent()))
+""".trimIndent()
+            )
+        )
 
-        assertEquals("""
+        assertEquals(
+            """
             Sx1
             1x1
             1xE
-""".trimIndent(), sut.tinyMaze("""
+""".trimIndent(), sut.tinyMaze(
+                """
     [[:S 0 1]
     [[1 0 1]
     [1 0 :E]]
-""".trimIndent()))
+""".trimIndent()
+            )
+        )
     }
 
-
+    @Test
+    fun saddlePoints() {
+        assertEquals(listOf(2), sut.saddlePoints(arrayOf(arrayOf(1, 2), arrayOf(3, 4))))
+        assertEquals(
+            listOf(5), sut.saddlePoints(
+                arrayOf(
+                    arrayOf(1, 2, 3, 4, 5),
+                    arrayOf(3, 4, 5, 6, 7),
+                    arrayOf(5, 6, 7, 8, 9),
+                    arrayOf(7, 8, 9, 10, 11),
+                    arrayOf(9, 10, 11, 12, 13),
+                )
+            )
+        )
+        assertEquals(
+            emptyList<Int>(), sut.saddlePoints(
+                arrayOf(
+                    arrayOf(1, 2, 3, 4, 5),
+                    arrayOf(3, 23, 5, 6, 7),
+                    arrayOf(5, 6, 11, 8, 9),
+                    arrayOf(7, 8, 9, 2, 1),
+                    arrayOf(9, 2, 11, 12, 0),
+                )
+            )
+        )
+    }
 }
 
-//[[:S 0 1]
-//[1  0 1]
-//[1  0 :E]]
-//
-//[[:S x 1]
-//[1  x 1]
-//[1  x :E]]
 
 //100 doors             -- done
 //12 Days of Xmas       -- done
@@ -601,9 +631,9 @@ C   C
 //Reverse Roman         -- done
 //Reversi
 //Roman Numerals        -- done
-//Saddle Points
+//Saddle Points         -- done
 //Tennis
-//Tiny Maze
+//Tiny Maze             -- done
 //Unsplice              -- done
 //Vending Machine
 //Wonderland Number
