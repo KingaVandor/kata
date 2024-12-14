@@ -1,6 +1,7 @@
 package com.example.shoppingbasket.services
 
 import com.example.shoppingbasket.services.Month.*
+import com.example.shoppingbasket.services.TennisPlayer.*
 import com.example.shoppingbasket.services.WeekDay.*
 import java.math.BigDecimal
 import java.math.RoundingMode
@@ -695,6 +696,32 @@ class KataService {
     }
 
 
+    fun tennis(scores: List<TennisPlayer>): Pair<TennisScore, TennisPlayer?> {
+        if (scores.isEmpty()) return Pair(TennisScore.LOVE, null)
+        val scoreMap: Map<TennisPlayer, Int> = scores.groupingBy { it }.eachCount()
+
+        if (scoreMap[A] == scoreMap[B]) {
+            return when (scoreMap[A]) {
+                1 -> Pair(TennisScore.FIFTEEN, null)
+                2 -> Pair(TennisScore.THIRTY, null)
+                3 -> Pair(TennisScore.FORTY, null)
+                else -> Pair(TennisScore.DEUCE, null)
+            }
+        }
+
+        val currentWinner: TennisPlayer = scoreMap.maxBy { it.value }.key
+        return when (scoreMap[currentWinner]) {
+            1 -> Pair(TennisScore.FIFTEEN, currentWinner)
+            2 -> Pair(TennisScore.THIRTY, currentWinner)
+            3 -> Pair(TennisScore.FORTY, currentWinner)
+            4 -> Pair(TennisScore.ADVANTAGE, currentWinner)
+            else -> Pair(TennisScore.GAME, currentWinner)
+        }
+
+
+    }
+
+
 //    fun pokerHands(blackHand: List<String>, whiteHand: List<String>): String {
 //        val black = Pair(Player.Black, blackHand.map { it.dropLast(1) }.map { getRank(it) }.sortedDescending())
 //        val white = Pair(Player.White, whiteHand.map { it.dropLast(1) }.map { getRank(it) }.sortedDescending())
@@ -758,7 +785,7 @@ class KataService {
 ////        }
 //        return Score(hand.first, Hands.HIGH, hand.second[0].longName, null)
 //    }
-    }
+}
 
 
 //data class Score(
@@ -768,7 +795,7 @@ class KataService {
 //    val value: Int?,
 //)
 
-    //enum class Hands(val longName: String) {
+//enum class Hands(val longName: String) {
 //    TIE("Tie"),
 //    STRAIGHT_FLUSH("Straight Flush"),
 //    FOUR("Four of a Kind"),
@@ -802,21 +829,29 @@ class KataService {
 //    ACE(10, "Ace", "A"),
 //}
 //
-    enum class WeekDay {
-        MONDAY, TUESDAY, WEDNESDAY, THURSDAY, FRIDAY, SATURDAY, SUNDAY
-    }
+enum class WeekDay {
+    MONDAY, TUESDAY, WEDNESDAY, THURSDAY, FRIDAY, SATURDAY, SUNDAY
+}
 
-    enum class Month {
-        JANUARY, FEBRUARY, MARCH, APRIL, MAY, JUNE, JULY, AUGUST, SEPT, OCT, NOV, DEC
-    }
+enum class Month {
+    JANUARY, FEBRUARY, MARCH, APRIL, MAY, JUNE, JULY, AUGUST, SEPT, OCT, NOV, DEC
+}
 
-    enum class Door {
-        CLOSED, OPEN,
-    }
+enum class Door {
+    CLOSED, OPEN,
+}
 
-    enum class Direction(val row: Int, val col: Int) {
-        UP(-1, 0), DOWN(1, 0), LEFT(0, -1), RIGHT(0, 1)
-    }
+enum class Direction(val row: Int, val col: Int) {
+    UP(-1, 0), DOWN(1, 0), LEFT(0, -1), RIGHT(0, 1)
+}
+
+enum class TennisPlayer {
+    A, B
+}
+
+enum class TennisScore {
+    LOVE, FIFTEEN, THIRTY, FORTY, ADVANTAGE, DEUCE, GAME
+}
 
 
 

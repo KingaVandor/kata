@@ -1,5 +1,6 @@
 package com.example.shoppingbasket.services
 
+import com.example.shoppingbasket.services.TennisPlayer.*
 import org.junit.jupiter.api.Assertions.assertArrayEquals
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertFalse
@@ -578,6 +579,22 @@ C   C
             )
         )
     }
+
+    @Test
+    fun tennis() {
+        assertEquals(Pair(TennisScore.LOVE, null), sut.tennis(emptyList()))
+
+        assertEquals(Pair(TennisScore.FIFTEEN, null), sut.tennis(listOf(A, B)))
+        assertEquals(Pair(TennisScore.THIRTY, null), sut.tennis(listOf(A, B, A, B)))
+        assertEquals(Pair(TennisScore.FORTY, null), sut.tennis(listOf(A, B, A, B, A, B)))
+        assertEquals(Pair(TennisScore.DEUCE, null), sut.tennis(listOf(A, B, A, B, A, B, A, B)))
+
+        assertEquals(Pair(TennisScore.FIFTEEN, A), sut.tennis(listOf(A)))
+        assertEquals(Pair(TennisScore.THIRTY, A), sut.tennis(listOf(A, A, B)))
+        assertEquals(Pair(TennisScore.FORTY, B), sut.tennis(listOf(A, B, A, B, B)))
+        assertEquals(Pair(TennisScore.ADVANTAGE, A), sut.tennis(listOf(A, B, A, B, A, B, A)))
+        assertEquals(Pair(TennisScore.GAME, B), sut.tennis(listOf(A, B, A, B, A, B, A, B, B)))
+    }
 }
 
 
@@ -632,7 +649,7 @@ C   C
 //Reversi
 //Roman Numerals        -- done
 //Saddle Points         -- done
-//Tennis
+//Tennis                -- done
 //Tiny Maze             -- done
 //Unsplice              -- done
 //Vending Machine
