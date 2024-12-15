@@ -335,15 +335,15 @@ class KataService {
     }
 
 
-    private fun canFindPath(s: String, blockMap: Map<Pair<Char, Char>, Int>): Boolean {
+    private fun canFindPath(s: String, currentBlockMap: Map<Pair<Char, Char>, Int>): Boolean {
         if (s == "") return true
 
-        val blocksWeCanUse =
-            blockMap.filter { (it.key.first == s.first() || it.key.second == s.first()) && it.value > 0 }.toList()
+        val blocksWeCanUse: List<Pair<Pair<Char, Char>, Int>> =
+            currentBlockMap.filter { (it.key.first == s.first() || it.key.second == s.first()) && it.value > 0 }.toList()
         if (blocksWeCanUse.isEmpty()) return false
 
         val paths = blocksWeCanUse.filter {
-            val remainingMap = blockMap.toMutableMap()
+            val remainingMap = currentBlockMap.toMutableMap()
             remainingMap[it.first] = it.second - 1
 
             canFindPath(s.substring(1), remainingMap)
@@ -381,29 +381,23 @@ class KataService {
         return true
     }
 
-    private val anagramList = emptyList<String>().toMutableList()
+
     fun anagrams(s: String): Set<String> {
-        generator("", s)
-        return anagramList.toSet()
+        return generator("", s).toSet()
     }
 
-    private fun generator(starter: String, leftover: String): Boolean {
-        if (leftover.isEmpty()) {
-            anagramList.add(starter)
-            return true
+    private fun generator(starter: String, leftover: String): List<String> {
+        if (leftover.length <= 1) {
+            return listOf(starter + leftover)
         }
 
-        if (leftover.length == 1) {
-            anagramList.add(starter + leftover)
-            return true
-        }
-
+        val answer = mutableListOf<String>()
         for (i in leftover.indices) {
             val newStarter = starter + leftover[i].toString()
             val newLeftover = leftover.replaceRange(IntRange(i, i), "")
-            generator(newStarter, newLeftover)
+            answer.addAll(generator(newStarter, newLeftover))
         }
-        return false
+        return answer
 
     }
 
