@@ -721,6 +721,37 @@ class KataService {
 
     }
 
+    fun <T> removeDuplicates(list: List<T>): List<T> =
+        list.distinct()
+
+    private var cacheList: MutableList<String> = emptyList<String>().toMutableList()
+
+    fun recentlyUsedList(s: String, max: Int): List<String> {
+        if (s.isEmpty()) return cacheList
+        if (!cacheList.contains(s)) {
+            cacheList.add(0, s)
+            if (cacheList.size > max) cacheList =
+                cacheList.dropLast(cacheList.size - max).toMutableList()
+        } else {
+            cacheList = cacheList.filter { it != s }.toMutableList()
+            cacheList.add(0, s)
+        }
+        return cacheList
+    }
+
+    fun reorder(s: String, range: Pair<Int, Int>, position: Int): String {
+        if (range.first > range.second || range.first < 0 || position < 0 || range.first >= s.length || range.second +1  >= s.length || position >= s.length) return "out of range"
+
+        val start = s.substring(0, minOf(range.first, position))
+        val end = s.substring(maxOf(range.second+1, position), s.length)
+        val toMove = s.substring(range.first, range.second + 1)
+        val mid = if(range.second < position) s.substring(range.second+1, position)
+            else s.substring(position, range.first)
+
+        return if(range.second < position) start + mid + toMove + end
+            else start + toMove + mid + end
+    }
+
 
 //    fun pokerHands(blackHand: List<String>, whiteHand: List<String>): String {
 //        val black = Pair(Player.Black, blackHand.map { it.dropLast(1) }.map { getRank(it) }.sortedDescending())

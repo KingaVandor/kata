@@ -595,7 +595,40 @@ C   C
         assertEquals(Pair(TennisScore.ADVANTAGE, A), sut.tennis(listOf(A, B, A, B, A, B, A)))
         assertEquals(Pair(TennisScore.GAME, B), sut.tennis(listOf(A, B, A, B, A, B, A, B, B)))
     }
-}
+
+    @Test
+    fun removeDuplicates() {
+        assertEquals(emptyList<String>(), sut.removeDuplicates(emptyList<String>()))
+        assertEquals(listOf(1,2,3), sut.removeDuplicates(listOf(1,1,2,2,3,3)))
+        assertEquals(listOf("a", "b"), sut.removeDuplicates(listOf("a", "a", "a", "b")))
+
+    }
+
+    @Test
+    fun recentlyUsedList() {
+        assertEquals(emptyList<String>(), sut.recentlyUsedList("", 2))
+        assertEquals(listOf("cat"), sut.recentlyUsedList("cat", 2))
+        assertEquals(listOf("dog", "cat"), sut.recentlyUsedList("dog", 2))
+        assertEquals(listOf("hamster", "dog"), sut.recentlyUsedList("hamster", 2))
+        assertEquals(listOf("dog", "hamster"), sut.recentlyUsedList("dog", 2))
+    }
+
+    @Test
+    fun reorder() {
+        assertEquals("out of range", sut.reorder("Hello World", Pair(-1,2), 5))
+        assertEquals("out of range", sut.reorder("Hello World", Pair(1,-2), 5))
+        assertEquals("out of range", sut.reorder("Hello World", Pair(1,2), -5))
+        assertEquals("out of range", sut.reorder("Hello World", Pair(11,2), 5))
+        assertEquals("out of range", sut.reorder("Hello World", Pair(1,11), 5))
+        assertEquals("out of range", sut.reorder("Hello World", Pair(10,2), 5))
+        assertEquals("out of range", sut.reorder("Hello World", Pair(1,2), 11))
+
+        assertEquals("Hloel_World", sut.reorder("Hello_World", Pair(1,2), 5))
+        assertEquals("HelloWor_ld", sut.reorder("Hello_World", Pair(6,8), 5))
+    }
+
+
+    }
 
 
 //100 doors             -- done
@@ -642,9 +675,9 @@ C   C
 //Poker Hands
 //Prime Factors         -- done
 //Print Diamond         -- done
-//Recently Used List
-//Remove Duplicates
-//Reordering
+//Recently Used List    -- done
+//Remove Duplicates     -- done
+//Reordering            -- done
 //Reverse Roman         -- done
 //Reversi
 //Roman Numerals        -- done
