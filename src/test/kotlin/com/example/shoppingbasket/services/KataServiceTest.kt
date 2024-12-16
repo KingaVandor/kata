@@ -599,7 +599,7 @@ C   C
     @Test
     fun removeDuplicates() {
         assertEquals(emptyList<String>(), sut.removeDuplicates(emptyList<String>()))
-        assertEquals(listOf(1,2,3), sut.removeDuplicates(listOf(1,1,2,2,3,3)))
+        assertEquals(listOf(1, 2, 3), sut.removeDuplicates(listOf(1, 1, 2, 2, 3, 3)))
         assertEquals(listOf("a", "b"), sut.removeDuplicates(listOf("a", "a", "a", "b")))
 
     }
@@ -615,20 +615,32 @@ C   C
 
     @Test
     fun reorder() {
-        assertEquals("out of range", sut.reorder("Hello World", Pair(-1,2), 5))
-        assertEquals("out of range", sut.reorder("Hello World", Pair(1,-2), 5))
-        assertEquals("out of range", sut.reorder("Hello World", Pair(1,2), -5))
-        assertEquals("out of range", sut.reorder("Hello World", Pair(11,2), 5))
-        assertEquals("out of range", sut.reorder("Hello World", Pair(1,11), 5))
-        assertEquals("out of range", sut.reorder("Hello World", Pair(10,2), 5))
-        assertEquals("out of range", sut.reorder("Hello World", Pair(1,2), 11))
+        assertEquals("out of range", sut.reorder("Hello World", Pair(-1, 2), 5))
+        assertEquals("out of range", sut.reorder("Hello World", Pair(1, -2), 5))
+        assertEquals("out of range", sut.reorder("Hello World", Pair(1, 2), -5))
+        assertEquals("out of range", sut.reorder("Hello World", Pair(11, 2), 5))
+        assertEquals("out of range", sut.reorder("Hello World", Pair(1, 11), 5))
+        assertEquals("out of range", sut.reorder("Hello World", Pair(10, 2), 5))
+        assertEquals("out of range", sut.reorder("Hello World", Pair(1, 2), 11))
 
-        assertEquals("Hloel_World", sut.reorder("Hello_World", Pair(1,2), 5))
-        assertEquals("HelloWor_ld", sut.reorder("Hello_World", Pair(6,8), 5))
+        assertEquals("Hloel_World", sut.reorder("Hello_World", Pair(1, 2), 5))
+        assertEquals("HelloWor_ld", sut.reorder("Hello_World", Pair(6, 8), 5))
     }
 
-
+    @Test
+    fun arePhoneNumbersConsistent() {
+        assertTrue(sut.arePhoneNumbersConsistent(listOf("07722056874", "07775656874")))
+        assertFalse(sut.arePhoneNumbersConsistent(listOf("079", "07975656874")))
     }
+
+    @Test
+    fun numberChain() {
+        assertEquals(Pair(listOf(0, 0), 2), sut.numberChain(444))
+        assertEquals(Pair(listOf(297, 693, 594, 495, 495), 5), sut.numberChain(523))
+        assertEquals(Pair(listOf(3087, 8352, 6174, 6174), 4), sut.numberChain(1234))
+        assertEquals(Pair(listOf(864197532, 864197532), 2), sut.numberChain(123456789))
+    }
+}
 
 
 //100 doors             -- done
@@ -669,9 +681,9 @@ C   C
 //Mine Field            -- done
 //Mine Sweeper
 //Monty Hall
-//Number Chains
+//Number Chains         -- done
 //Number Names          -- done
-//Phone Numbers
+//Phone Numbers         -- done
 //Poker Hands
 //Prime Factors         -- done
 //Print Diamond         -- done

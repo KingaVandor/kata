@@ -746,6 +746,32 @@ class KataService {
             else start + toMove + mid + end
     }
 
+    fun arePhoneNumbersConsistent(numbers: List<String> ): Boolean {
+        for (i in numbers.indices) {
+            for (j in numbers.indices) {
+                if (i==j) continue
+                if (numbers[i].contains(numbers[j].toRegex())) return false
+            }
+
+        }
+        return true
+    }
+
+    fun numberChain(num: Int): Pair<List<Int>, Int> {
+        val numberList = emptyList<Int>().toMutableList()
+        var current = num
+
+        while (numberList.groupingBy { it }.eachCount().values.none { it > 1 }) {
+            val ascending = current.toString().toCharArray().sorted().joinToString(separator = "").toInt()
+            val descending = current.toString().toCharArray().sortedDescending().joinToString(separator = "").toInt()
+
+            numberList.add(descending - ascending)
+            current = descending - ascending
+        }
+
+        return Pair(numberList, numberList.size)
+    }
+
 
 //    fun pokerHands(blackHand: List<String>, whiteHand: List<String>): String {
 //        val black = Pair(Player.Black, blackHand.map { it.dropLast(1) }.map { getRank(it) }.sortedDescending())
