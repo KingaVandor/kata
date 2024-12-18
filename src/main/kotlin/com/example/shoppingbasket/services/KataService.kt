@@ -543,19 +543,19 @@ class KataService {
         for (row in 0..<rows) {
             for (col in 0..<cols) {
                 if (field[row][col] == '*') {
-                    for (r in -1..1) {
-                        for (c in -1..1) {
-                            if ((row + r in 0..<rows) && (col + c in 0..<cols) && !(c == 0 && r == 0)) {
-                                val currentVal = field[r + row][c + col]
-                                if (currentVal == '*') continue
-                                field[row + r] = field[row + r].replaceRange(
-                                    c + col,
-                                    c + col + 1,
-                                    (currentVal.toString().toInt() + 1).toString()
+                    for (neighbour in Neighbours.entries) {
+                            if ((row + neighbour.row in 0..<rows) &&
+                                (col + neighbour.col in 0..<cols)) {
+
+                                val neighbourVal = field[neighbour.row + row][neighbour.col + col]
+                                if (neighbourVal == '*') continue
+                                field[row + neighbour.row] = field[row + neighbour.row].replaceRange(
+                                    neighbour.col + col,
+                                    neighbour.col + col + 1,
+                                    (neighbourVal.toString().toInt() + 1).toString()
                                 )
                             }
                         }
-                    }
                 }
             }
         }
@@ -613,7 +613,7 @@ class KataService {
         var path = emptyList<String>().toMutableList()
         val newMaze = maze.toMutableList()
 
-        for (direction in listOf(Direction.RIGHT, Direction.DOWN, Direction.LEFT, Direction.UP)) {
+        for (direction in Direction.entries) {
             if (path.isNotEmpty()) break
             val nextRow = start.first + direction.row
             val nextCol = start.second + direction.col
@@ -867,9 +867,9 @@ enum class Direction(val row: Int, val col: Int) {
 }
 
 enum class Neighbours(val row: Int, val col: Int) {
-    TOP_LEFT(-1, 0), TOP(1, 0), TOP_RIGHT(0, -1),
-    LEFT(0, 1), RIGHT(0, 1),
-    BOTTOM_LEFT(-1, 0), BOTTOM(1, 0), BOTTOM_RIGHT(0, -1),
+    TOP_LEFT(1, -1), TOP(1, 0), TOP_RIGHT(1, 1),
+    LEFT(0, -1), RIGHT(0, 1),
+    BOTTOM_LEFT(-1, -1), BOTTOM(-1, 0), BOTTOM_RIGHT(-1, 1),
 
 }
 
