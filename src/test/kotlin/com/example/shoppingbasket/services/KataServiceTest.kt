@@ -71,24 +71,24 @@ class KataServiceTest {
     }
 
     @Test
-    fun encode() {
-        assertEquals("", sut.encode(0))
-        assertEquals("I", sut.encode(1))
-        assertEquals("XXI", sut.encode(21))
-        assertEquals("MMVIII", sut.encode(2008))
-        assertEquals("MDCLXVI", sut.encode(1666))
+    fun encodeToRoman() {
+        assertEquals("", sut.encodeToRoman(0))
+        assertEquals("I", sut.encodeToRoman(1))
+        assertEquals("XXI", sut.encodeToRoman(21))
+        assertEquals("MMVIII", sut.encodeToRoman(2008))
+        assertEquals("MDCLXVI", sut.encodeToRoman(1666))
     }
 
     @Test
-    fun decode() {
-        assertEquals(0, sut.decode(""))
-        assertEquals(1, sut.decode("I"))
-        assertEquals(21, sut.decode("XXI"))
-        assertEquals(2008, sut.decode("MMVIII"))
-        assertEquals(1666, sut.decode("MDCLXVI"))
-        assertEquals(96, sut.decode("XCVI"))
-        assertEquals(4, sut.decode("IV"))
-        assertEquals(916, sut.decode("CMXVI"))
+    fun decodeFromRoman() {
+        assertEquals(0, sut.decodeFromRoman(""))
+        assertEquals(1, sut.decodeFromRoman("I"))
+        assertEquals(21, sut.decodeFromRoman("XXI"))
+        assertEquals(2008, sut.decodeFromRoman("MMVIII"))
+        assertEquals(1666, sut.decodeFromRoman("MDCLXVI"))
+        assertEquals(96, sut.decodeFromRoman("XCVI"))
+        assertEquals(4, sut.decodeFromRoman("IV"))
+        assertEquals(916, sut.decodeFromRoman("CMXVI"))
     }
 
     @Test
@@ -137,16 +137,16 @@ C   C
 
 
     @Test
-    fun spellOut() {
-        assertEquals("zero", sut.spellOut(0))
-        assertEquals("ninety nine", sut.spellOut(99))
-        assertEquals("three hundred", sut.spellOut(300))
-        assertEquals("three hundred and ten", sut.spellOut(310))
-        assertEquals("one thousand, five hundred and one", sut.spellOut(1501))
-        assertEquals("five hundred and twelve thousand, six hundred and seven", sut.spellOut(512607))
+    fun spellOutNumber() {
+        assertEquals("zero", sut.spellOutNumber(0))
+        assertEquals("ninety nine", sut.spellOutNumber(99))
+        assertEquals("three hundred", sut.spellOutNumber(300))
+        assertEquals("three hundred and ten", sut.spellOutNumber(310))
+        assertEquals("one thousand, five hundred and one", sut.spellOutNumber(1501))
+        assertEquals("five hundred and twelve thousand, six hundred and seven", sut.spellOutNumber(512607))
         assertEquals(
             "forty three million, one hundred and twelve thousand, six hundred and three",
-            sut.spellOut(43112603)
+            sut.spellOutNumber(43112603)
         )
 
     }
@@ -154,35 +154,10 @@ C   C
     @Test
     fun inArray() {
         val a2 = arrayOf("lively", "alive", "harp", "sharp", "armstrong")
-        assertArrayEquals(arrayOf("live", "strong"), sut.inArray(arrayOf<String>("xyz", "live", "strong"), a2))
+        assertArrayEquals(arrayOf("live", "strong"), sut.inArray(arrayOf("xyz", "live", "strong"), a2))
         assertArrayEquals(arrayOf("arp", "live", "strong"), sut.inArray(arrayOf("live", "strong", "arp"), a2))
         assertArrayEquals(arrayOf<String>(), sut.inArray(arrayOf("tarp", "mice", "bull"), a2))
     }
-
-//    @Test
-//    fun pokerHands() {
-//        assertEquals(
-//            "Tie",
-//            sut.pokerHands(
-//                blackHand = listOf("2H", "3D", "5S", "9C", "KD"),
-//                whiteHand = listOf("2D", "3H", "5C", "9S", "KH")
-//            )
-//        )
-//        assertEquals(
-//            "Black wins - High Card: 9",
-//            sut.pokerHands(
-//                blackHand = listOf("2H", "2D", "2S", "9C", "KD"),
-//                whiteHand = listOf("2C", "3H", "4S", "5C", "KH")
-//            )
-//        )
-//        assertEquals(
-//            "White wins - High Card: Ace",
-//            sut.pokerHands(
-//                blackHand = listOf("2H", "3D", "5S", "9C", "KD"),
-//                whiteHand = listOf("2C", "3H", "4S", "8C", "AH")
-//            )
-//        )
-//    }
 
     @Test
     fun xmas() {
@@ -302,8 +277,6 @@ C   C
             A partridge in a pear tree.
         """.trimIndent()
         assertEquals(expected, sut.xmas())
-
-
     }
 
     @Test
@@ -640,6 +613,20 @@ C   C
         assertEquals(Pair(listOf(3087, 8352, 6174, 6174), 4), sut.numberChain(1234))
         assertEquals(Pair(listOf(864197532, 864197532), 2), sut.numberChain(123456789))
     }
+
+    @Test
+    fun magicSquare() {
+        assertEquals("""
+            [1.5, 4.0, 3.5, 5.0, 3.0, 1.0, 2.5, 2.0, 4.5]
+            [1.5, 5.0, 2.5, 4.0, 3.0, 2.0, 3.5, 1.0, 4.5]
+            [2.5, 2.0, 4.5, 5.0, 3.0, 1.0, 1.5, 4.0, 3.5]
+            [2.5, 5.0, 1.5, 2.0, 3.0, 4.0, 4.5, 1.0, 3.5]
+            [3.5, 1.0, 4.5, 4.0, 3.0, 2.0, 1.5, 5.0, 2.5]
+            [3.5, 4.0, 1.5, 1.0, 3.0, 5.0, 4.5, 2.0, 2.5]
+            [4.5, 1.0, 3.5, 2.0, 3.0, 4.0, 2.5, 5.0, 1.5]
+            [4.5, 2.0, 2.5, 1.0, 3.0, 5.0, 3.5, 4.0, 1.5]
+        """.trimIndent(), sut.magicSquare())
+    }
 }
 
 
@@ -676,7 +663,7 @@ C   C
 //Leap Years            -- done
 //Levenshtein Distance
 //Longest Common Prefix
-//Magic Square
+//Magic Square          -- done
 //Mars Rover
 //Mine Field            -- done
 //Mine Sweeper

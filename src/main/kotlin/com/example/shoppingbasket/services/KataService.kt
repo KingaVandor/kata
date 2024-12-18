@@ -17,7 +17,6 @@ class KataService {
 
     fun digitize(n: Long): IntArray = n.toString().reversed().map { it.toString().toInt() }.toIntArray()
 
-
     fun getAscii(c: Char): Int = c.code
 
     fun productFib(prod: Long): LongArray {
@@ -66,9 +65,7 @@ class KataService {
         """.trimIndent()
     }
 
-
-    fun encode(num: Int): String {
-
+    fun encodeToRoman(num: Int): String {
         val romanMap = mapOf(
             1000 to "M",
             900 to "CM",
@@ -89,7 +86,6 @@ class KataService {
         if (num == 0) return ""
         var remainder = num
 
-
         while (remainder > 0) {
             for (entry in romanMap) {
                 if (remainder >= entry.key) {
@@ -101,7 +97,7 @@ class KataService {
         return answ
     }
 
-    fun decode(str: String): Int {
+    fun decodeFromRoman(str: String): Int {
         var answ = 0
         if (str == "") return answ
         var prev = '_'
@@ -123,6 +119,7 @@ class KataService {
 
     fun diamond(c: Char): String {
         if (c == 'A') return c.toString()
+
         val placeInAlphabet = c.lowercaseChar().code - 'a'.code + 1
         val rows: MutableList<String> = emptyList<String>().toMutableList()
         for (i in 1..placeInAlphabet) {
@@ -181,7 +178,7 @@ class KataService {
         return countDown.dropLast(1)
     }
 
-    fun spellOut(n: Int): String {
+    fun spellOutNumber(n: Int): String {
 
         if (n == 0) return "zero"
         var remainder = n
@@ -216,11 +213,11 @@ class KataService {
         while (remainder > 0) {
             for (entry in numMap) {
                 if (remainder >= entry.key) {
-                    answ += getAnd(prev, entry.key) + getTimes(
-                        remainder,
-                        entry.key,
-                        numMap
-                    ) + numMap[entry.key] + getComma(entry.key) + " "
+                    answ += getAnd(prev, entry.key) +
+                            getTimes(remainder, entry.key, numMap,) +
+                            numMap[entry.key] +
+                            getComma(entry.key) +
+                            " "
                     remainder %= entry.key
                     prev = entry.key
                 }
@@ -238,26 +235,24 @@ class KataService {
     private fun getAnd(prev: Int, key: Int): String {
         return if (prev >= 100 && key < 100) "and "
         else ""
-
     }
 
     private fun getTimes(remainder: Int, key: Int, numMap: Map<Int, String>): String {
         return if (key < 100 && remainder / key == 1) ""
         else {
-            numMap[remainder / key]?.let { "$it " } ?: (spellOut(remainder / key) + " ")
+            numMap[remainder / key]?.let { "$it " } ?: (spellOutNumber(remainder / key) + " ")
         }
-
     }
 
     fun inArray(array1: Array<String>, array2: Array<String>): Array<String> {
         return array1
-            .filter { iselementof(array2, it) }
+            .filter { isElementOf(array2, it) }
             .distinct()
             .sorted()
             .toTypedArray()
     }
 
-    private fun iselementof(array2: Array<String>, s: String): Boolean {
+    private fun isElementOf(array2: Array<String>, s: String): Boolean {
         return array2.filter { it.contains(s) }.toList().isNotEmpty()
     }
 
@@ -328,12 +323,10 @@ class KataService {
         Pair('P', 'C'),
         Pair('Z', 'M'),
     )
-
+    private val blockMap = blocks.groupingBy { it }.eachCount()
     fun abc(s: String): Boolean {
-        val blockMap = blocks.groupingBy { it }.eachCount()
         return canFindPath(s, blockMap)
     }
-
 
     private fun canFindPath(s: String, currentBlockMap: Map<Pair<Char, Char>, Int>): Boolean {
         if (s == "") return true
@@ -364,23 +357,20 @@ class KataService {
         if (onlyBrackets.length % 2 != 0) return false
 
         while (onlyBrackets.isNotEmpty()) {
-            val originalLength = onlyBrackets.length
             var new = onlyBrackets
-            for (i in 0..<originalLength) {
-                if ((i + 1 < originalLength) && (bracketMap[onlyBrackets[i]] == onlyBrackets[i + 1])) {
+            for (i in onlyBrackets.indices) {
+                if ((i + 1 < onlyBrackets.length) && (bracketMap[onlyBrackets[i]] == onlyBrackets[i + 1])) {
                     new = onlyBrackets.replaceRange(IntRange(i, i + 1), "_")
                     break
-
                 }
             }
             new = new.filter { bracketList.contains(it) }
             if (new.isEmpty()) return true
-            if (new.length == originalLength) return false
+            else if (new.length == onlyBrackets.length) return false
             else onlyBrackets = new
         }
         return true
     }
-
 
     fun anagrams(s: String): Set<String> {
         return generator("", s).toSet()
@@ -398,7 +388,6 @@ class KataService {
             answer.addAll(generator(newStarter, newLeftover))
         }
         return answer
-
     }
 
     fun stats(arr: Array<Int>): Array<Double> {
@@ -413,11 +402,8 @@ class KataService {
     fun closestToZero(arr: Array<Int>): Int {
         val max = arr.maxOf { abs(it) }
         var closestToZero = max
-
         for (i in arr) {
-            if (abs(i) < closestToZero) {
-                closestToZero = i
-            } else if ((abs(i) == abs(closestToZero)) && (i > 0)) closestToZero = i
+            if ((abs(i) < closestToZero) || (abs(i) == abs(closestToZero)) && (i > 0)) closestToZero = i
         }
 
         return closestToZero
@@ -428,7 +414,6 @@ class KataService {
         val nextOrdinal = (ordinal + 1) % values.size
         return values[nextOrdinal]
     }
-
 
     fun friday13(): WeekDay {
         var prev = SUNDAY
@@ -450,10 +435,10 @@ class KataService {
 
         for (i in 1973..2024) {
             for (month in months) {
-                val days: Int = if ((i % 4 == 0) && month.key == FEBRUARY) 29
+                val numberOfDays: Int = if ((i % 4 == 0) && month.key == FEBRUARY) 29
                 else month.value
 
-                for (date in 1..days) {
+                for (date in 1..numberOfDays) {
                     val day = prev.next()
                     prev = day
                     if (date == 13) {
@@ -463,14 +448,12 @@ class KataService {
             }
 
         }
-        println("thirteens: $thirteens")
         return thirteens.maxBy { (key, value) -> value }.key
     }
 
     fun leapYear(year: Int): Boolean {
         return (year % 400 == 0) || (year % 4 == 0 && year % 100 != 0)
     }
-
 
     fun primeFactors(num: Int): List<Int> {
         var remainder = num
@@ -544,7 +527,6 @@ class KataService {
             else -> (11 - mod).toString()
         }
     }
-
 
     fun mineField(s: String): String {
         if (s.length <= 1) {
@@ -638,9 +620,9 @@ class KataService {
 
             path = when (getNextIfInRange(Pair(nextRow, nextCol), maze)) {
                 '0' -> {
-                    val newRow: String = maze[nextRow].replaceRange(nextCol, nextCol + 1, 'x'.toString())
+                    val newRow: String = maze[nextRow].replaceRange(nextCol, nextCol + 1 , 'x'.toString())
                     newMaze[nextRow] = newRow
-                    getPath(Pair(nextRow, start.second + direction.col), newMaze)
+                    getPath(Pair(nextRow, nextCol), newMaze)
                 }
 
                 'E' -> maze.toMutableList()
@@ -661,23 +643,35 @@ class KataService {
     }
 
     fun saddlePoints(arr: Array<Array<Int>>): List<Int> {
-        val rowMaxes = emptyMap<Int, Int>().toMutableMap()
-        arr.toList().mapIndexed { index, list -> rowMaxes[index] = list.max() }
+        val rowMaxes = getRowMaxes(arr)
+        val colMins = getColMins(arr, rowMaxes.maxOf { it.value })
 
+        return getSaddlePoints(arr, rowMaxes, colMins)
+
+    }
+
+    private fun getColMins(arr: Array<Array<Int>>, max: Int): Map<Int, Int> {
         val colMins = emptyMap<Int, Int>().toMutableMap()
-        val rows = arr.size
-        val cols = arr[0].size
-        for (col in 0..<cols) {
-            var colMin = rowMaxes.maxOf { it.value }
-            for (row in 0..<rows) {
+        for (col in 0..<arr[0].size) {
+            var colMin = max
+            for (row in arr.indices) {
                 if (arr[row][col] < colMin) colMin = arr[row][col]
             }
             colMins[col] = colMin
         }
+        return colMins.toMap()
+    }
 
+    private fun getRowMaxes(arr: Array<Array<Int>>): Map<Int, Int> {
+        val rowMaxes = emptyMap<Int, Int>().toMutableMap()
+        arr.toList().mapIndexed { index, list -> rowMaxes[index] = list.max() }
+        return rowMaxes.toMap()
+    }
+
+    private fun getSaddlePoints(arr: Array<Array<Int>>, rowMaxes: Map<Int, Int>, colMins: Map<Int, Int>): List<Int> {
         val saddlePoints = emptyList<Int>().toMutableList()
-        for (row in 0..<rows) {
-            for (col in 0..<cols) {
+        for (row in arr.indices) {
+            for (col in 0..<arr[0].size) {
                 val currentVal = arr[row][col]
                 if (currentVal >= (rowMaxes[row] ?: 0) && currentVal <= (colMins[col] ?: 0)
                 ) {
@@ -686,9 +680,7 @@ class KataService {
             }
         }
         return saddlePoints
-
     }
-
 
     fun tennis(scores: List<TennisPlayer>): Pair<TennisScore, TennisPlayer?> {
         if (scores.isEmpty()) return Pair(TennisScore.LOVE, null)
@@ -772,79 +764,57 @@ class KataService {
         return Pair(numberList, numberList.size)
     }
 
+    fun magicSquare(): String {
+        val numbersList = listOf(1.0, 1.5, 2.0, 2.5, 3.0, 3.5, 4.0, 4.5, 5.0,)
+        val rows = getRows(emptyList(), numbersList).toSet()
+            .filter { rowsAddUp(it) && colsAddUp(it) && diagonalsAddUp(it)  }
 
-//    fun pokerHands(blackHand: List<String>, whiteHand: List<String>): String {
-//        val black = Pair(Player.Black, blackHand.map { it.dropLast(1) }.map { getRank(it) }.sortedDescending())
-//        val white = Pair(Player.White, whiteHand.map { it.dropLast(1) }.map { getRank(it) }.sortedDescending())
-//
-//        val winner = getWinner(black, white) ?: return "Tie"
-//
-//        return "${winner.player.name} wins - ${winner.hand.longName}: ${winner.card}"
-//    }
-//
-//    private fun getRank(card: String): Rank {
-//        return Rank.entries.firstNotNullOf {
-//            if (it.shortName == card) it
-//            else null
-//        }
-//    }
-//
-//    private fun getWinner(black: Pair<Player, List<Rank>>, white: Pair<Player, List<Rank>>): Score? {
-//        if (black.second.containsAll(white.second)) return null
-//        val backScores = getScores(black)
-//        for (i in 0..4) {
-//            if (black.second[i].ordinal > white.second[i].ordinal) return Score(
-//                Player.Black,
-//                Hands.HIGH,
-//                black.second[i].longName,
-//                null
-//            )
-//            if (black.second[i].ordinal < white.second[i].ordinal) return Score(
-//                Player.White,
-//                Hands.HIGH,
-//                white.second[i].longName,
-//                null
-//            )
-//        }
-//        return null
-//    }
-//
-//    private fun getScores(hand: Pair<Player, List<Rank>>): Any {
-//        val sames = hand.second.groupingBy { it }.eachCount()
-//
-//        val fours = sames.filter { it.value >= 4 }
-//        if (fours.isNotEmpty()) return Score(
-//            player = hand.first,
-//            hand = Hands.FOUR,
-//            card = fours.map { entry -> entry.key.longName }.first(),
-//            fours.map { entry -> (entry.key.value) * (entry.value) }.first()
-//        )
-//
-//        val threes = sames.filter { it.value >= 3 }
-//        if (threes.isNotEmpty()) return Score(
-//            player = hand.first,
-//            hand = Hands.THREE,
-//            card = threes.map { entry -> entry.key.longName }.first(),
-//            threes.map { entry -> (entry.key.value) * (entry.value) }.first()
-//        )
-//
-//        val pairs = sames.filter { it.value >= 2 }
-////        if(pairs.isNotEmpty()) {
-////            if (pairs.size == 2)
-////                val highest =
-////                return Score(player = hand.first, hand =  Hands.TWO_PAIRS, card =  pairs.map { entry -> entry.key.longName }.first(),  pairs.map { entry -> (entry.key.value) * (entry.value) }.first())
-////        }
-//        return Score(hand.first, Hands.HIGH, hand.second[0].longName, null)
-//    }
+        return buildString { rows.forEach { append(it).appendLine() }}.dropLast(1)
+    }
+
+    private fun diagonalsAddUp(row: List<Double>): Boolean {
+        val first  = row[0] + row[4] + row[8]
+        val second  = row[2] + row[4] + row[6]
+        return first == second
+    }
+
+    private fun colsAddUp(row: List<Double>): Boolean {
+        val first  = row[0] + row[3] + row[6]
+        val second  = row[1] + row[4] + row[7]
+        val third  = row[2] + row[5] + row[8]
+        return first == second && second == third
+    }
+
+    private fun rowsAddUp(row: List<Double>): Boolean {
+        val first  = row[0] + row[1] + row[2]
+        val second  = row[3] + row[4] + row[5]
+        val third  = row[6] + row[7] + row[8]
+        return first == second && second == third
+    }
+
+    private fun getRows(starter: List<Double>, remainingNums: List<Double>): List<List<Double>> {
+        val answer = emptyList<List<Double>>().toMutableList()
+        if (starter.size == 9 ) {
+            answer.add((starter))
+        }
+
+        else if (starter.size < 9 ) {
+            for(i in remainingNums.indices) {
+                val newStarter = starter.toMutableList()
+                newStarter.add(remainingNums[i])
+                val leftover = remainingNums.toMutableList()
+                leftover.removeAt(i)
+
+                answer.addAll(getRows(newStarter, leftover))
+            }
+        }
+
+        return answer
+
+    }
+
+
 }
-
-
-//data class Score(
-//    val player: Player,
-//    val hand: Hands,
-//    val card: String,
-//    val value: Int?,
-//)
 
 //enum class Hands(val longName: String) {
 //    TIE("Tie"),
@@ -894,6 +864,13 @@ enum class Door {
 
 enum class Direction(val row: Int, val col: Int) {
     UP(-1, 0), DOWN(1, 0), LEFT(0, -1), RIGHT(0, 1)
+}
+
+enum class Neighbours(val row: Int, val col: Int) {
+    TOP_LEFT(-1, 0), TOP(1, 0), TOP_RIGHT(0, -1),
+    LEFT(0, 1), RIGHT(0, 1),
+    BOTTOM_LEFT(-1, 0), BOTTOM(1, 0), BOTTOM_RIGHT(0, -1),
+
 }
 
 enum class TennisPlayer {
