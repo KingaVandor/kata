@@ -627,6 +627,18 @@ C   C
             [4.5, 2.0, 2.5, 1.0, 3.0, 5.0, 3.5, 4.0, 1.5]
         """.trimIndent(), sut.magicSquare())
     }
+
+    @Test
+    fun longestPrefix() {
+        assertEquals(0, sut.longestPrefix(listOf("a", "b")))
+        assertEquals(1, sut.longestPrefix(listOf("abcde", "abc", "a", "ab", "abcd")))
+        assertEquals(2, sut.longestPrefix(listOf("new", "next")))
+        assertEquals(3, sut.longestPrefix(listOf("newest", "new", "newly")))
+        assertEquals(0, sut.longestPrefix(listOf("pond", "pod", "new", "newest")))
+        assertEquals(0, sut.longestPrefix(listOf("pond", "new", "newly"),2))
+        assertEquals(2, sut.longestPrefix(listOf("pond", "pod", "new", "newest"),2))
+    }
+
 }
 
 
@@ -662,7 +674,7 @@ C   C
 //LCD Digits            -- done
 //Leap Years            -- done
 //Levenshtein Distance
-//Longest Common Prefix
+//Longest Common Prefix -- done
 //Magic Square          -- done
 //Mars Rover
 //Mine Field            -- done

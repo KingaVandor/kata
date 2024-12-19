@@ -813,6 +813,26 @@ class KataService {
 
     }
 
+    fun longestPrefix(strings: List<String?>, min: Int = strings.size): Int {
+        if (min == strings.size) {
+            val shortestString = strings.filterNotNull().associateWith { it.length }.toSortedMap().firstKey()
+            return longestPrefix(shortestString, strings, strings.size)
+        }
+        return strings.filterNotNull().associateWith { longestPrefix(it, strings, min) }.minOf { it.value }
+    }
+
+    private fun longestPrefix(s: String, strings: List<String?>, min: Int): Int {
+        for (i: Int in s.indices) {
+            if (canFindInAtLeast(s.dropLast(i), strings, min)) return s.dropLast(i).length
+        }
+        return 0
+    }
+
+    private fun canFindInAtLeast(sub: String, strings: List<String?>, min: Int): Boolean {
+        val matches = strings.filterNotNull().filter { it.startsWith(sub) }.toList()
+        return matches.size >= min
+    }
+
 
 }
 
