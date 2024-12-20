@@ -639,6 +639,11 @@ C   C
         assertEquals(2, sut.longestPrefix(listOf("pond", "pod", "new", "newest"),2))
     }
 
+    @Test
+    fun fiveWeekends() {
+        assertEquals(Pair(201, 29), sut.fiveWeekends())
+  }
+
 }
 
 
@@ -660,7 +665,7 @@ C   C
 //Eight Queens
 //Filename Range
 //Fisher-Yates Shuffle
-//Five Weekends
+//Five Weekends         -- done
 //Fizz Buzz             -- done
 //Fizz Buzz Plus
 //Friday 13th           -- done

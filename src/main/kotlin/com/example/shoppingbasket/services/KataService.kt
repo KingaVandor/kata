@@ -833,6 +833,43 @@ class KataService {
         return matches.size >= min
     }
 
+    private val calendar = mutableMapOf<Int,Map<Month, Map<Int, WeekDay>>>()
+    private val fiveDays = mutableMapOf<Int,List<Month>>()
+    private val noFiveDayWeekends = mutableListOf<Int>()
+    private fun generateCalendar() {
+        var currentWeekDay  = MONDAY
+        for (year in 1900 .. 2100) {
+            val monthsOfYear = mutableMapOf<Month, Map<Int, WeekDay>>()
+
+            for (month: Month in Month.entries) {
+                val daysOfMonth = mutableMapOf<Int, WeekDay>()
+                val days = if ((year % 4 == 0 && year != 1900) && (month == FEBRUARY)) 29 else month.days
+                for (day in 1.. days) {
+                    daysOfMonth[day] = currentWeekDay
+                    currentWeekDay = currentWeekDay.next()
+                }
+                monthsOfYear[month] = daysOfMonth
+                if (hasFiveWeekends(daysOfMonth)) fiveDays.merge(year, listOf(month), Collection<Month>::plus)
+            }
+            if (fiveDays[year] == null) noFiveDayWeekends.add(year)
+        }
+    }
+
+    private fun hasFiveWeekends(daysOfMonth: Map<Int, WeekDay>):Boolean {
+        val fridays = daysOfMonth.values.filter { it == FRIDAY }.toList().size
+        val saturdays = daysOfMonth.values.filter { it == SATURDAY }.toList().size
+        val sundays = daysOfMonth.values.filter { it == SUNDAY }.toList().size
+        return fridays == 5 && saturdays == 5 && sundays == 5
+    }
+
+    fun fiveWeekends(): Pair<Int, Int> {
+        if (calendar.isEmpty()) generateCalendar()
+
+        return Pair(fiveDays.values.sumOf { it.size }, noFiveDayWeekends.size)
+    }
+
+
+
 
 }
 
@@ -874,8 +911,8 @@ enum class WeekDay {
     MONDAY, TUESDAY, WEDNESDAY, THURSDAY, FRIDAY, SATURDAY, SUNDAY
 }
 
-enum class Month {
-    JANUARY, FEBRUARY, MARCH, APRIL, MAY, JUNE, JULY, AUGUST, SEPT, OCT, NOV, DEC
+enum class Month(val days: Int) {
+    JANUARY(31), FEBRUARY(28), MARCH(31), APRIL(30), MAY(31), JUNE(30), JULY(31), AUGUST(31), SEPT(30), OCT(31), NOV(30), DEC(31)
 }
 
 enum class Door {
