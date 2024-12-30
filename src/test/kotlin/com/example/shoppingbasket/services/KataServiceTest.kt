@@ -662,6 +662,31 @@ C   C
         assertEquals(13, sut.calculateChange(25).size)
         assertEquals(49, sut.calculateChange(50).size)
     }
+
+        @Test
+    fun pokerHands() {
+        assertEquals(
+            Score(Hand.TIE),
+            sut.pokerHands(
+                blackHand = listOf("2H", "3D", "5S", "9C", "KD"),
+                whiteHand = listOf("2D", "3H", "5C", "9S", "KH")
+            )
+        )
+        assertEquals(
+            Score(Hand.THREE, Player.Black),
+            sut.pokerHands(
+                blackHand = listOf("2H", "2D", "2S", "9C", "KD"),
+                whiteHand = listOf("2C", "3H", "4S", "5C", "KH")
+            )
+        )
+        assertEquals(
+            Score(Hand.FULL, Player.Black),
+            sut.pokerHands(
+                blackHand = listOf("2H", "2D", "2S", "5C", "5D"),
+                whiteHand = listOf("2C", "3H", "4S", "8C", "AH")
+            )
+        )
+    }
 }
 
 

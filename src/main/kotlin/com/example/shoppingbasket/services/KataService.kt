@@ -834,8 +834,11 @@ class KataService {
     }
 
     private val calendar = mutableMapOf<Int, Map<Month, Map<Int, WeekDay>>>()
+
     private val fiveDays = mutableMapOf<Int, List<Month>>()
+
     private val noFiveDayWeekends = mutableListOf<Int>()
+
     private fun generateCalendar() {
         var currentWeekDay = MONDAY
         for (year in 1900..2100) {
@@ -884,7 +887,6 @@ class KataService {
         return combos
     }
 
-
     private val changeSets = mutableSetOf<Map<Coins, Int>>()
 
     fun calculateChange(sum: Int): Set<Map<Coins, Int>> {
@@ -910,44 +912,110 @@ class KataService {
         }
     }
 
+    fun pokerHands(blackHand: List<String>, whiteHand: List<String>): Score {
+        if (isTie(blackHand, whiteHand)) return Score(Hand.TIE)
+        val whiteHighest = getHighest(whiteHand)
+        val blackHighest = getHighest(blackHand)
+
+        if (whiteHighest.ordinal > blackHighest.ordinal) return Score(whiteHighest, Player.White)
+        return Score(blackHighest, Player.Black)
+    }
+
+    private fun getHighest(hand: List<String>): Hand {
+        if(isFour(hand)) return Hand.FOUR
+        if(isFullHouse(hand)) return Hand.FULL
+        if(isFlush(hand)) return Hand.FLUSH
+        if(isStraight(hand)) return Hand.STRAIGHT
+        if(isThree(hand)) return Hand.THREE
+        if(getPairs(hand).size == 2) return Hand.TWO_PAIRS
+        if(getPairs(hand).size == 1) return Hand.PAIR
+
+        return Hand.HIGH
+    }
+
+    private fun isTie(blackHand: List<String>, whiteHand: List<String>): Boolean {
+
+        return blackHand.map { black -> black[0] }.containsAll(whiteHand.map { white -> white[0] })
+    }
+
+    private fun isFour(hand: List<String>): Boolean {
+        return hand.groupingBy { it[0] }.eachCount().filter { it.value == 4 }.isNotEmpty()
+    }
+
+    private fun isFullHouse(hand: List<String>): Boolean {
+        val cardCount = hand.groupingBy { it[0] }.eachCount()
+        return cardCount.filter { it.value == 3 }.isNotEmpty() && cardCount.filter { it.value == 2 }.isNotEmpty()
+    }
+
+    private fun isFlush(hand: List<String>): Boolean {
+        return hand.groupingBy { it[1] }.eachCount().filter { it.value == 5 }.isNotEmpty()
+    }
+
+    private fun isThree(hand: List<String>): Boolean {
+        return hand.groupingBy { it[0] }.eachCount().filter { it.value == 3 }.isNotEmpty()
+    }
+
+    private fun getPairs(hand: List<String>): Map<Char, Int> {
+        return hand.groupingBy { it[0] }.eachCount().filter { it.value == 2 }
+    }
+
+    private fun isStraight(hand: List<String>): Boolean {
+        val sorted = hand.map { it[0] }.sortedBy { it }
+        var consecutive = 0
+        var previousOrdinal = 0
+        for (card in sorted) {
+            val currentOrdinal = Rank.entries.first { it.shortName == card.toString() }.ordinal
+            if (currentOrdinal == previousOrdinal + 1) consecutive++
+            previousOrdinal = currentOrdinal
+        }
+
+        return consecutive == 5
+    }
 
 
 }
 
-//enum class Hands(val longName: String) {
-//    TIE("Tie"),
-//    STRAIGHT_FLUSH("Straight Flush"),
-//    FOUR("Four of a Kind"),
-//    FULL("Full House"),
-//    FLUSH("Flush"),
-//    STRAIGHT("Straight"),
-//    THREE("Three of a Kind"),
-//    TWO_PAIRS("Two Pairs"),
-//    PAIR("Pair"),
-//    HIGH("High Card"),
-//}
-//
-//enum class Player() {
-//    Black,
-//    White
-//}
-//
-//enum class Rank(val value: Int, val longName: String, val shortName: String) {
-//    TWO(2, "2", "2"),
-//    THREE(3, "3", "3"),
-//    FOUR(4, "4", "4"),
-//    FIVE(5, "5", "5"),
-//    SIX(6, "6", "6"),
-//    SEVEN(7, "7", "7"),
-//    EIGHT(8, "8", "8"),
-//    NINE(9, "9", "9"),
-//    TEN(10, "Ten", "T"),
-//    JACK(10, "Jack", "J"),
-//    QUEEN(10, "Queen", "Q"),
-//    KING(10, "King", "K"),
-//    ACE(10, "Ace", "A"),
-//}
-//
+enum class Hand {
+    TIE,
+    HIGH,
+    PAIR,
+    TWO_PAIRS,
+    THREE,
+    STRAIGHT,
+    FLUSH,
+    FULL,
+    FOUR,
+    STRAIGHT_FLUSH,
+
+
+}
+
+enum class Player() {
+    Black,
+    White
+}
+
+enum class Rank(val value: Int, val longName: String, val shortName: String) {
+    TWO(2, "2", "2"),
+    THREE(3, "3", "3"),
+    FOUR(4, "4", "4"),
+    FIVE(5, "5", "5"),
+    SIX(6, "6", "6"),
+    SEVEN(7, "7", "7"),
+    EIGHT(8, "8", "8"),
+    NINE(9, "9", "9"),
+    TEN(10, "Ten", "T"),
+    JACK(10, "Jack", "J"),
+    QUEEN(10, "Queen", "Q"),
+    KING(10, "King", "K"),
+    ACE(10, "Ace", "A"),
+}
+
+data class Score(
+    val hand: Hand,
+    val player: Player? = null,
+    )
+
 
 enum class Coins(val value: Int) {
     QUARTERS(25),
