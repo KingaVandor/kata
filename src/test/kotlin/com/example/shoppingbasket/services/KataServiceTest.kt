@@ -616,7 +616,8 @@ C   C
 
     @Test
     fun magicSquare() {
-        assertEquals("""
+        assertEquals(
+            """
             [1.5, 4.0, 3.5, 5.0, 3.0, 1.0, 2.5, 2.0, 4.5]
             [1.5, 5.0, 2.5, 4.0, 3.0, 2.0, 3.5, 1.0, 4.5]
             [2.5, 2.0, 4.5, 5.0, 3.0, 1.0, 1.5, 4.0, 3.5]
@@ -625,7 +626,8 @@ C   C
             [3.5, 4.0, 1.5, 1.0, 3.0, 5.0, 4.5, 2.0, 2.5]
             [4.5, 1.0, 3.5, 2.0, 3.0, 4.0, 2.5, 5.0, 1.5]
             [4.5, 2.0, 2.5, 1.0, 3.0, 5.0, 3.5, 4.0, 1.5]
-        """.trimIndent(), sut.magicSquare())
+        """.trimIndent(), sut.magicSquare()
+        )
     }
 
     @Test
@@ -635,16 +637,42 @@ C   C
         assertEquals(2, sut.longestPrefix(listOf("new", "next")))
         assertEquals(3, sut.longestPrefix(listOf("newest", "new", "newly")))
         assertEquals(0, sut.longestPrefix(listOf("pond", "pod", "new", "newest")))
-        assertEquals(0, sut.longestPrefix(listOf("pond", "new", "newly"),2))
-        assertEquals(2, sut.longestPrefix(listOf("pond", "pod", "new", "newest"),2))
+        assertEquals(0, sut.longestPrefix(listOf("pond", "new", "newly"), 2))
+        assertEquals(2, sut.longestPrefix(listOf("pond", "pod", "new", "newest"), 2))
     }
 
     @Test
     fun fiveWeekends() {
         assertEquals(Pair(201, 29), sut.fiveWeekends())
-  }
+    }
 
+    @Test
+    fun largestCombinedNumber() {
+        assertEquals("95021", sut.largestCombinedNumber(listOf(50, 2, 1, 9)))
+        assertEquals("56550", sut.largestCombinedNumber(listOf(5, 50, 56)))
+        assertEquals("42423420", sut.largestCombinedNumber(listOf(420, 42, 423)))
+    }
+
+    @Test
+    fun calculateChange() {
+        assertEquals(2, sut.calculateChange(5).size)
+        assertEquals(4, sut.calculateChange(10).size)
+        assertEquals(6, sut.calculateChange(15).size)
+        assertEquals(9, sut.calculateChange(20).size)
+        assertEquals(13, sut.calculateChange(25).size)
+        assertEquals(49, sut.calculateChange(50).size)
+    }
 }
+
+
+
+//There are 6 ways to make change for 15 cents:
+//o) A dime and a nickel;
+//o) A dime and 5 pennies;
+//o) 3 nickels;
+//o) 2 nickels and 5 pennies;
+//o) A nickel and 10 pennies;
+//o) 15 pennies.
 
 
 //100 doors             -- done
@@ -658,8 +686,8 @@ C   C
 //Bowling Game
 //Calc Stats            -- done
 //Closest To Zero       -- done
-//Combined Number
-//Count Coins
+//Combined Number       -- done
+//Count Coins           -- done (sorta)
 //Diff Selector
 //Diversion
 //Eight Queens

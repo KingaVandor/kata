@@ -214,7 +214,7 @@ class KataService {
             for (entry in numMap) {
                 if (remainder >= entry.key) {
                     answ += getAnd(prev, entry.key) +
-                            getTimes(remainder, entry.key, numMap,) +
+                            getTimes(remainder, entry.key, numMap) +
                             numMap[entry.key] +
                             getComma(entry.key) +
                             " "
@@ -332,7 +332,8 @@ class KataService {
         if (s == "") return true
 
         val blocksWeCanUse: List<Pair<Pair<Char, Char>, Int>> =
-            currentBlockMap.filter { (it.key.first == s.first() || it.key.second == s.first()) && it.value > 0 }.toList()
+            currentBlockMap.filter { (it.key.first == s.first() || it.key.second == s.first()) && it.value > 0 }
+                .toList()
         if (blocksWeCanUse.isEmpty()) return false
 
         val paths = blocksWeCanUse.filter {
@@ -544,18 +545,19 @@ class KataService {
             for (col in 0..<cols) {
                 if (field[row][col] == '*') {
                     for (neighbour in Neighbours.entries) {
-                            if ((row + neighbour.row in 0..<rows) &&
-                                (col + neighbour.col in 0..<cols)) {
+                        if ((row + neighbour.row in 0..<rows) &&
+                            (col + neighbour.col in 0..<cols)
+                        ) {
 
-                                val neighbourVal = field[neighbour.row + row][neighbour.col + col]
-                                if (neighbourVal == '*') continue
-                                field[row + neighbour.row] = field[row + neighbour.row].replaceRange(
-                                    neighbour.col + col,
-                                    neighbour.col + col + 1,
-                                    (neighbourVal.toString().toInt() + 1).toString()
-                                )
-                            }
+                            val neighbourVal = field[neighbour.row + row][neighbour.col + col]
+                            if (neighbourVal == '*') continue
+                            field[row + neighbour.row] = field[row + neighbour.row].replaceRange(
+                                neighbour.col + col,
+                                neighbour.col + col + 1,
+                                (neighbourVal.toString().toInt() + 1).toString()
+                            )
                         }
+                    }
                 }
             }
         }
@@ -620,7 +622,7 @@ class KataService {
 
             path = when (getNextIfInRange(Pair(nextRow, nextCol), maze)) {
                 '0' -> {
-                    val newRow: String = maze[nextRow].replaceRange(nextCol, nextCol + 1 , 'x'.toString())
+                    val newRow: String = maze[nextRow].replaceRange(nextCol, nextCol + 1, 'x'.toString())
                     newMaze[nextRow] = newRow
                     getPath(Pair(nextRow, nextCol), newMaze)
                 }
@@ -726,22 +728,22 @@ class KataService {
     }
 
     fun reorder(s: String, range: Pair<Int, Int>, position: Int): String {
-        if (range.first > range.second || range.first < 0 || position < 0 || range.first >= s.length || range.second +1  >= s.length || position >= s.length) return "out of range"
+        if (range.first > range.second || range.first < 0 || position < 0 || range.first >= s.length || range.second + 1 >= s.length || position >= s.length) return "out of range"
 
         val start = s.substring(0, minOf(range.first, position))
-        val end = s.substring(maxOf(range.second+1, position), s.length)
+        val end = s.substring(maxOf(range.second + 1, position), s.length)
         val toMove = s.substring(range.first, range.second + 1)
-        val mid = if(range.second < position) s.substring(range.second+1, position)
-            else s.substring(position, range.first)
+        val mid = if (range.second < position) s.substring(range.second + 1, position)
+        else s.substring(position, range.first)
 
-        return if(range.second < position) start + mid + toMove + end
-            else start + toMove + mid + end
+        return if (range.second < position) start + mid + toMove + end
+        else start + toMove + mid + end
     }
 
-    fun arePhoneNumbersConsistent(numbers: List<String> ): Boolean {
+    fun arePhoneNumbersConsistent(numbers: List<String>): Boolean {
         for (i in numbers.indices) {
             for (j in numbers.indices) {
-                if (i==j) continue
+                if (i == j) continue
                 if (numbers[i].contains(numbers[j].toRegex())) return false
             }
 
@@ -765,41 +767,39 @@ class KataService {
     }
 
     fun magicSquare(): String {
-        val numbersList = listOf(1.0, 1.5, 2.0, 2.5, 3.0, 3.5, 4.0, 4.5, 5.0,)
+        val numbersList = listOf(1.0, 1.5, 2.0, 2.5, 3.0, 3.5, 4.0, 4.5, 5.0)
         val rows = getRows(emptyList(), numbersList).toSet()
-            .filter { rowsAddUp(it) && colsAddUp(it) && diagonalsAddUp(it)  }
+            .filter { rowsAddUp(it) && colsAddUp(it) && diagonalsAddUp(it) }
 
-        return buildString { rows.forEach { append(it).appendLine() }}.dropLast(1)
+        return buildString { rows.forEach { append(it).appendLine() } }.dropLast(1)
     }
 
     private fun diagonalsAddUp(row: List<Double>): Boolean {
-        val first  = row[0] + row[4] + row[8]
-        val second  = row[2] + row[4] + row[6]
+        val first = row[0] + row[4] + row[8]
+        val second = row[2] + row[4] + row[6]
         return first == second
     }
 
     private fun colsAddUp(row: List<Double>): Boolean {
-        val first  = row[0] + row[3] + row[6]
-        val second  = row[1] + row[4] + row[7]
-        val third  = row[2] + row[5] + row[8]
+        val first = row[0] + row[3] + row[6]
+        val second = row[1] + row[4] + row[7]
+        val third = row[2] + row[5] + row[8]
         return first == second && second == third
     }
 
     private fun rowsAddUp(row: List<Double>): Boolean {
-        val first  = row[0] + row[1] + row[2]
-        val second  = row[3] + row[4] + row[5]
-        val third  = row[6] + row[7] + row[8]
+        val first = row[0] + row[1] + row[2]
+        val second = row[3] + row[4] + row[5]
+        val third = row[6] + row[7] + row[8]
         return first == second && second == third
     }
 
     private fun getRows(starter: List<Double>, remainingNums: List<Double>): List<List<Double>> {
         val answer = emptyList<List<Double>>().toMutableList()
-        if (starter.size == 9 ) {
+        if (starter.size == 9) {
             answer.add((starter))
-        }
-
-        else if (starter.size < 9 ) {
-            for(i in remainingNums.indices) {
+        } else if (starter.size < 9) {
+            for (i in remainingNums.indices) {
                 val newStarter = starter.toMutableList()
                 newStarter.add(remainingNums[i])
                 val leftover = remainingNums.toMutableList()
@@ -833,18 +833,18 @@ class KataService {
         return matches.size >= min
     }
 
-    private val calendar = mutableMapOf<Int,Map<Month, Map<Int, WeekDay>>>()
-    private val fiveDays = mutableMapOf<Int,List<Month>>()
+    private val calendar = mutableMapOf<Int, Map<Month, Map<Int, WeekDay>>>()
+    private val fiveDays = mutableMapOf<Int, List<Month>>()
     private val noFiveDayWeekends = mutableListOf<Int>()
     private fun generateCalendar() {
-        var currentWeekDay  = MONDAY
-        for (year in 1900 .. 2100) {
+        var currentWeekDay = MONDAY
+        for (year in 1900..2100) {
             val monthsOfYear = mutableMapOf<Month, Map<Int, WeekDay>>()
 
             for (month: Month in Month.entries) {
                 val daysOfMonth = mutableMapOf<Int, WeekDay>()
                 val days = if ((year % 4 == 0 && year != 1900) && (month == FEBRUARY)) 29 else month.days
-                for (day in 1.. days) {
+                for (day in 1..days) {
                     daysOfMonth[day] = currentWeekDay
                     currentWeekDay = currentWeekDay.next()
                 }
@@ -855,7 +855,7 @@ class KataService {
         }
     }
 
-    private fun hasFiveWeekends(daysOfMonth: Map<Int, WeekDay>):Boolean {
+    private fun hasFiveWeekends(daysOfMonth: Map<Int, WeekDay>): Boolean {
         val fridays = daysOfMonth.values.filter { it == FRIDAY }.toList().size
         val saturdays = daysOfMonth.values.filter { it == SATURDAY }.toList().size
         val sundays = daysOfMonth.values.filter { it == SUNDAY }.toList().size
@@ -868,6 +868,47 @@ class KataService {
         return Pair(fiveDays.values.sumOf { it.size }, noFiveDayWeekends.size)
     }
 
+    fun largestCombinedNumber(nums: List<Int>): String {
+        return generateCombos("", nums).toSet().maxOfOrNull { it.toInt() }.toString()
+    }
+
+    private fun generateCombos(starter: String, leftoverNums: List<Int>): List<String> {
+        if (leftoverNums.isEmpty()) return listOf(starter)
+        val combos = mutableListOf<String>()
+        for (num in leftoverNums) {
+            val newStarter = starter + num
+            val newLeftover = leftoverNums.toMutableList()
+            newLeftover.remove(num)
+            combos.addAll(generateCombos(newStarter, newLeftover))
+        }
+        return combos
+    }
+
+
+    private val changeSets = mutableSetOf<Map<Coins, Int>>()
+
+    fun calculateChange(sum: Int): Set<Map<Coins, Int>> {
+        changeSets.clear()
+        generateChange(emptyList(), sum)
+        return  changeSets
+
+    }
+
+    private fun generateChange(starter: List<Coins>, leftover: Int) {
+        if (leftover == 0) changeSets.add(starter.groupingBy { coin -> coin }.eachCount().toSortedMap() )
+        else {
+            for (coin in Coins.entries) {
+                if (coin.value > leftover) {
+                    continue
+                }
+                else {
+                    val newStarter = starter + coin
+                    val newLeftover = leftover - coin.value
+                    generateChange(newStarter, newLeftover)
+                }
+            }
+        }
+    }
 
 
 
@@ -907,12 +948,23 @@ class KataService {
 //    ACE(10, "Ace", "A"),
 //}
 //
+
+enum class Coins(val value: Int) {
+    QUARTERS(25),
+    DIMES(10),
+    NICKELS(5),
+    PENNIES(1),
+
+}
+
 enum class WeekDay {
     MONDAY, TUESDAY, WEDNESDAY, THURSDAY, FRIDAY, SATURDAY, SUNDAY
 }
 
 enum class Month(val days: Int) {
-    JANUARY(31), FEBRUARY(28), MARCH(31), APRIL(30), MAY(31), JUNE(30), JULY(31), AUGUST(31), SEPT(30), OCT(31), NOV(30), DEC(31)
+    JANUARY(31), FEBRUARY(28), MARCH(31), APRIL(30), MAY(31), JUNE(30), JULY(31), AUGUST(31), SEPT(30), OCT(31), NOV(30), DEC(
+        31
+    )
 }
 
 enum class Door {
