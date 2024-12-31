@@ -918,10 +918,12 @@ class KataService {
         val blackHighest = getHighest(blackHand)
 
         if (whiteHighest.ordinal > blackHighest.ordinal) return Score(whiteHighest, Player.White)
-        return Score(blackHighest, Player.Black)
+        if (blackHighest.ordinal > whiteHighest.ordinal) return Score(blackHighest, Player.Black)
+        return Score(Hand.TIE)
     }
 
     private fun getHighest(hand: List<String>): Hand {
+        if(isFlush(hand) && isStraight(hand)) return Hand.STRAIGHT_FLUSH
         if(isFour(hand)) return Hand.FOUR
         if(isFullHouse(hand)) return Hand.FULL
         if(isFlush(hand)) return Hand.FLUSH
@@ -964,12 +966,13 @@ class KataService {
         var consecutive = 0
         var previousOrdinal = 0
         for (card in sorted) {
-            val currentOrdinal = Rank.entries.first { it.shortName == card.toString() }.ordinal
+            val currentCard: Rank = Rank.entries.first { it.shortName == card }
+            val currentOrdinal = currentCard.ordinal
             if (currentOrdinal == previousOrdinal + 1) consecutive++
             previousOrdinal = currentOrdinal
         }
 
-        return consecutive == 5
+        return consecutive == 4
     }
 
 
@@ -995,20 +998,20 @@ enum class Player() {
     White
 }
 
-enum class Rank(val value: Int, val longName: String, val shortName: String) {
-    TWO(2, "2", "2"),
-    THREE(3, "3", "3"),
-    FOUR(4, "4", "4"),
-    FIVE(5, "5", "5"),
-    SIX(6, "6", "6"),
-    SEVEN(7, "7", "7"),
-    EIGHT(8, "8", "8"),
-    NINE(9, "9", "9"),
-    TEN(10, "Ten", "T"),
-    JACK(10, "Jack", "J"),
-    QUEEN(10, "Queen", "Q"),
-    KING(10, "King", "K"),
-    ACE(10, "Ace", "A"),
+enum class Rank(val value: Int, val longName: String, val shortName: Char) {
+    TWO(2, "2", '2'),
+    THREE(3, "3", '3'),
+    FOUR(4, "4", '4'),
+    FIVE(5, "5", '5'),
+    SIX(6, "6", '6'),
+    SEVEN(7, "7", '7'),
+    EIGHT(8, "8", '8'),
+    NINE(9, "9", '9'),
+    TEN(10, "Ten", 'T'),
+    JACK(10, "Jack", 'J'),
+    QUEEN(10, "Queen", 'Q'),
+    KING(10, "King", 'K'),
+    ACE(10, "Ace", 'A'),
 }
 
 data class Score(

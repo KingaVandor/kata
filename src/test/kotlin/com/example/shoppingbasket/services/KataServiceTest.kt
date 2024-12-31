@@ -663,13 +663,49 @@ C   C
         assertEquals(49, sut.calculateChange(50).size)
     }
 
-        @Test
+    @Test
     fun pokerHands() {
+
         assertEquals(
             Score(Hand.TIE),
             sut.pokerHands(
                 blackHand = listOf("2H", "3D", "5S", "9C", "KD"),
                 whiteHand = listOf("2D", "3H", "5C", "9S", "KH")
+            )
+        )
+        assertEquals(
+            Score(Hand.STRAIGHT_FLUSH, Player.Black),
+            sut.pokerHands(
+                blackHand = listOf("4H", "5H", "6H", "7H", "8H"),
+                whiteHand = listOf("2C", "3H", "4S", "8C", "AH")
+            )
+        )
+        assertEquals(
+            Score(Hand.FOUR, Player.Black),
+            sut.pokerHands(
+                blackHand = listOf("2H", "2D", "2S", "2C", "5D"),
+                whiteHand = listOf("2C", "3H", "4S", "8C", "AH")
+            )
+        )
+        assertEquals(
+            Score(Hand.FULL, Player.Black),
+            sut.pokerHands(
+                blackHand = listOf("2H", "2D", "2S", "5C", "5D"),
+                whiteHand = listOf("2C", "3H", "4S", "8C", "AH")
+            )
+        )
+        assertEquals(
+            Score(Hand.FLUSH, Player.Black),
+            sut.pokerHands(
+                blackHand = listOf("2H", "3H", "6H", "QH", "KH"),
+                whiteHand = listOf("2C", "3H", "4S", "8C", "AH")
+            )
+        )
+        assertEquals(
+            Score(Hand.STRAIGHT, Player.Black),
+            sut.pokerHands(
+                blackHand = listOf("4H", "5D", "6S", "7C", "8D"),
+                whiteHand = listOf("2C", "3H", "4S", "8C", "AH")
             )
         )
         assertEquals(
@@ -680,15 +716,32 @@ C   C
             )
         )
         assertEquals(
-            Score(Hand.FULL, Player.Black),
+            Score(Hand.TWO_PAIRS, Player.Black),
             sut.pokerHands(
-                blackHand = listOf("2H", "2D", "2S", "5C", "5D"),
-                whiteHand = listOf("2C", "3H", "4S", "8C", "AH")
+                blackHand = listOf("2H", "2D", "3S", "3C", "KD"),
+                whiteHand = listOf("2C", "3H", "4S", "5C", "KH")
+            )
+        )
+
+        assertEquals(
+            Score(Hand.PAIR, Player.Black),
+            sut.pokerHands(
+                blackHand = listOf("2H", "2D", "3S", "5C", "KD"),
+                whiteHand = listOf("2C", "3H", "4S", "5C", "KH")
+            )
+        )
+
+        assertEquals(
+            Score(Hand.TIE),
+            sut.pokerHands(
+                blackHand = listOf("2H", "3D", "6S", "8C", "KD"),
+                whiteHand = listOf("2C", "3H", "4S", "5C", "KH")
             )
         )
     }
-}
 
+
+}
 
 
 //There are 6 ways to make change for 15 cents:
