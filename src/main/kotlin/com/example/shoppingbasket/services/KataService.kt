@@ -1,6 +1,7 @@
 package com.example.shoppingbasket.services
 
 import com.example.shoppingbasket.services.Month.*
+import com.example.shoppingbasket.services.Rank.*
 import com.example.shoppingbasket.services.TennisPlayer.*
 import com.example.shoppingbasket.services.WeekDay.*
 import java.math.BigDecimal
@@ -912,27 +913,44 @@ class KataService {
         }
     }
 
+    val cards = mapOf(
+        '2' to TWO,
+        '3' to  THREE,
+        '4' to  FOUR,
+        '5' to  FIVE,
+        '6' to  SIX,
+        '7' to  SEVEN,
+        '8' to  EIGHT,
+        '9' to NINE,
+        'T' to  TEN,
+        'J' to  JACK,
+        'Q' to  QUEEN,
+        'K' to  KING,
+        'A' to  ACE,
+    )
+
     fun pokerHands(blackHand: List<String>, whiteHand: List<String>): Score {
         if (isTie(blackHand, whiteHand)) return Score(Hand.TIE)
-        val whiteHighest = getHighest(whiteHand)
-        val blackHighest = getHighest(blackHand)
+        val whiteScore = getHighest(whiteHand).copy(player = Player.White)
+        val blackScore = getHighest(blackHand).copy(player = Player.Black)
 
-        if (whiteHighest.ordinal > blackHighest.ordinal) return Score(whiteHighest, Player.White)
-        if (blackHighest.ordinal > whiteHighest.ordinal) return Score(blackHighest, Player.Black)
-        return Score(Hand.TIE)
+        if (whiteScore.hand.ordinal > blackScore.hand.ordinal) return whiteScore
+        if (blackScore.hand.ordinal > whiteScore.hand.ordinal) return blackScore
+        return listOf(whiteScore, blackScore).maxByOrNull { it.value!! } ?: Score(Hand.TIE)
     }
 
-    private fun getHighest(hand: List<String>): Hand {
-        if(isFlush(hand) && isStraight(hand)) return Hand.STRAIGHT_FLUSH
-        if(isFour(hand)) return Hand.FOUR
-        if(isFullHouse(hand)) return Hand.FULL
-        if(isFlush(hand)) return Hand.FLUSH
-        if(isStraight(hand)) return Hand.STRAIGHT
-        if(isThree(hand)) return Hand.THREE
-        if(getPairs(hand).size == 2) return Hand.TWO_PAIRS
-        if(getPairs(hand).size == 1) return Hand.PAIR
+    private fun getHighest(hand: List<String>): Score {
+        if(isFlush(hand)!= null && isStraight(hand)!= null) return isStraight(hand)!!.copy(hand = Hand.STRAIGHT_FLUSH)
+        if(isFour(hand) != null) return isFour(hand)!!
+        if(isFullHouse(hand) != null) return isFullHouse(hand)!!
+        if(isFlush(hand) != null) return isFlush(hand)!!
+        if(isStraight(hand)!= null) return isStraight(hand)!!
+        if(isThree(hand) != null) return isThree(hand)!!
+        if(isTwoPairs(hand) != null) return isTwoPairs(hand)!!
+        if(isPair(hand) != null) return isPair(hand)!!
 
-        return Hand.HIGH
+        val highestCard: Rank = hand.map { cards[it[0]] }.maxBy { it!!.ordinal }!!
+        return Score(Hand.HIGH, value = highestCard.value, rank = highestCard)
     }
 
     private fun isTie(blackHand: List<String>, whiteHand: List<String>): Boolean {
@@ -940,39 +958,70 @@ class KataService {
         return blackHand.map { black -> black[0] }.containsAll(whiteHand.map { white -> white[0] })
     }
 
-    private fun isFour(hand: List<String>): Boolean {
-        return hand.groupingBy { it[0] }.eachCount().filter { it.value == 4 }.isNotEmpty()
+    private fun isFour(hand: List<String>): Score? {
+        val isFour = hand.groupingBy { it[0] }.eachCount().filter { it.value == 4 }.map { it.key }
+
+        return if (isFour.isEmpty()) null
+        else Score(hand = Hand.FOUR, rank = cards[isFour[0]], value = cards[isFour[0]]!!.value)
     }
 
-    private fun isFullHouse(hand: List<String>): Boolean {
-        val cardCount = hand.groupingBy { it[0] }.eachCount()
-        return cardCount.filter { it.value == 3 }.isNotEmpty() && cardCount.filter { it.value == 2 }.isNotEmpty()
+    private fun  isFullHouse(hand: List<String>): Score? {
+        val hasThree = isThree(hand)
+        val hasPair = isPair(hand)
+
+        return if (hasThree != null && hasPair != null) Score(hand = Hand.FULL, rank = hasThree.rank, value = hasThree.value )
+        else null
     }
 
-    private fun isFlush(hand: List<String>): Boolean {
-        return hand.groupingBy { it[1] }.eachCount().filter { it.value == 5 }.isNotEmpty()
+    private fun isFlush(hand: List<String>): Score? {
+        val isFlush = hand.groupingBy { it[1] }.eachCount().filter { it.value == 5 }
+        return if (isFlush.isEmpty()) null
+        else {
+            val highest: Rank = hand.mapNotNull { cards[it[0]] }.maxByOrNull { it.ordinal }!!
+            Score(Hand.FLUSH, value = highest.value, rank = highest)
+        }
     }
 
-    private fun isThree(hand: List<String>): Boolean {
-        return hand.groupingBy { it[0] }.eachCount().filter { it.value == 3 }.isNotEmpty()
+    private fun isThree(hand: List<String>): Score? {
+        val isThree = hand.groupingBy { it[0] }.eachCount().filter { it.value == 3 }.map { it.key }
+        return if (isThree.isEmpty()) null
+        else Score(hand = Hand.THREE, rank = cards[isThree[0]], value = cards[isThree[0]]!!.value * 3)
+    }
+
+    private fun isPair(hand: List<String>): Score? {
+        val pairs = getPairs(hand)
+        return if(pairs.size == 1) Score(Hand.PAIR, rank = cards[pairs.keys.first()], value = (cards[pairs.keys.first()]!!.value * 2))
+        else null
+    }
+
+    private fun isTwoPairs(hand: List<String>): Score? {
+        val pairs = getPairs(hand)
+        return if(pairs.size == 2) {
+            val highest: Rank = pairs.entries.mapNotNull { cards[it.key] }.maxByOrNull { it.ordinal }!!
+            Score(Hand.TWO_PAIRS, rank = highest, value = highest.value * 2)
+        }
+        else null
     }
 
     private fun getPairs(hand: List<String>): Map<Char, Int> {
         return hand.groupingBy { it[0] }.eachCount().filter { it.value == 2 }
     }
 
-    private fun isStraight(hand: List<String>): Boolean {
+    private fun isStraight(hand: List<String>): Score? {
         val sorted = hand.map { it[0] }.sortedBy { it }
         var consecutive = 0
         var previousOrdinal = 0
         for (card in sorted) {
-            val currentCard: Rank = Rank.entries.first { it.shortName == card }
+            val currentCard: Rank = cards[card]!!
             val currentOrdinal = currentCard.ordinal
             if (currentOrdinal == previousOrdinal + 1) consecutive++
             previousOrdinal = currentOrdinal
         }
 
-        return consecutive == 4
+        return if(consecutive == 4) {
+            val highest: Rank = hand.mapNotNull { cards[it[0]] }.maxByOrNull { it.ordinal }!!
+            Score(Hand.STRAIGHT, value = highest.value, rank = highest)
+        } else null
     }
 
 
@@ -998,24 +1047,26 @@ enum class Player() {
     White
 }
 
-enum class Rank(val value: Int, val longName: String, val shortName: Char) {
-    TWO(2, "2", '2'),
-    THREE(3, "3", '3'),
-    FOUR(4, "4", '4'),
-    FIVE(5, "5", '5'),
-    SIX(6, "6", '6'),
-    SEVEN(7, "7", '7'),
-    EIGHT(8, "8", '8'),
-    NINE(9, "9", '9'),
-    TEN(10, "Ten", 'T'),
-    JACK(10, "Jack", 'J'),
-    QUEEN(10, "Queen", 'Q'),
-    KING(10, "King", 'K'),
-    ACE(10, "Ace", 'A'),
+enum class Rank(val value: Int) {
+    TWO(2),
+    THREE(3),
+    FOUR(4),
+    FIVE(5),
+    SIX(6),
+    SEVEN(7),
+    EIGHT(8),
+    NINE(9),
+    TEN(10),
+    JACK(10),
+    QUEEN(10),
+    KING(10),
+    ACE(10),
 }
 
 data class Score(
     val hand: Hand,
+    val rank: Rank? = null,
+    val value: Int? = null,
     val player: Player? = null,
     )
 

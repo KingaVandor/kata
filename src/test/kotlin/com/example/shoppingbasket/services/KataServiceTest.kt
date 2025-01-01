@@ -1,5 +1,7 @@
 package com.example.shoppingbasket.services
 
+import com.example.shoppingbasket.services.Player.*
+import com.example.shoppingbasket.services.Rank.*
 import com.example.shoppingbasket.services.TennisPlayer.*
 import org.junit.jupiter.api.Assertions.assertArrayEquals
 import org.junit.jupiter.api.Assertions.assertEquals
@@ -674,49 +676,56 @@ C   C
             )
         )
         assertEquals(
-            Score(Hand.STRAIGHT_FLUSH, Player.Black),
+            Score(Hand.STRAIGHT_FLUSH, rank = EIGHT, value = 8, player = Black),
             sut.pokerHands(
                 blackHand = listOf("4H", "5H", "6H", "7H", "8H"),
                 whiteHand = listOf("2C", "3H", "4S", "8C", "AH")
             )
         )
         assertEquals(
-            Score(Hand.FOUR, Player.Black),
+            Score(Hand.STRAIGHT_FLUSH, rank = NINE, value = 9, player = White),
+            sut.pokerHands(
+                blackHand = listOf("4H", "5H", "6H", "7H", "8H"),
+                whiteHand = listOf("5H", "6H", "7H", "8H", "9H"),
+            )
+        )
+        assertEquals(
+            Score(Hand.FOUR, rank = TWO, value = 2, player = Black),
             sut.pokerHands(
                 blackHand = listOf("2H", "2D", "2S", "2C", "5D"),
                 whiteHand = listOf("2C", "3H", "4S", "8C", "AH")
             )
         )
         assertEquals(
-            Score(Hand.FULL, Player.Black),
+            Score(Hand.FULL, rank = TWO, value = 6, player = Black),
             sut.pokerHands(
                 blackHand = listOf("2H", "2D", "2S", "5C", "5D"),
                 whiteHand = listOf("2C", "3H", "4S", "8C", "AH")
             )
         )
         assertEquals(
-            Score(Hand.FLUSH, Player.Black),
+            Score(Hand.FLUSH, rank = KING, value = 10, player = Black),
             sut.pokerHands(
                 blackHand = listOf("2H", "3H", "6H", "QH", "KH"),
                 whiteHand = listOf("2C", "3H", "4S", "8C", "AH")
             )
         )
         assertEquals(
-            Score(Hand.STRAIGHT, Player.Black),
+            Score(Hand.STRAIGHT, rank = EIGHT, value = 8, player = Black),
             sut.pokerHands(
                 blackHand = listOf("4H", "5D", "6S", "7C", "8D"),
                 whiteHand = listOf("2C", "3H", "4S", "8C", "AH")
             )
         )
         assertEquals(
-            Score(Hand.THREE, Player.Black),
+            Score(Hand.THREE, rank = TWO, value = 6, player = Black),
             sut.pokerHands(
                 blackHand = listOf("2H", "2D", "2S", "9C", "KD"),
                 whiteHand = listOf("2C", "3H", "4S", "5C", "KH")
             )
         )
         assertEquals(
-            Score(Hand.TWO_PAIRS, Player.Black),
+            Score(Hand.TWO_PAIRS, rank = THREE, value = 6, player = Black),
             sut.pokerHands(
                 blackHand = listOf("2H", "2D", "3S", "3C", "KD"),
                 whiteHand = listOf("2C", "3H", "4S", "5C", "KH")
@@ -724,7 +733,7 @@ C   C
         )
 
         assertEquals(
-            Score(Hand.PAIR, Player.Black),
+            Score(Hand.PAIR, rank = TWO, value = 4, player = Black),
             sut.pokerHands(
                 blackHand = listOf("2H", "2D", "3S", "5C", "KD"),
                 whiteHand = listOf("2C", "3H", "4S", "5C", "KH")
@@ -732,9 +741,20 @@ C   C
         )
 
         assertEquals(
-            Score(Hand.TIE),
+            Score(Hand.HIGH, rank = KING, value = 10, player = White),
             sut.pokerHands(
-                blackHand = listOf("2H", "3D", "6S", "8C", "KD"),
+                blackHand = listOf("2H", "3D", "6S", "8C", "QD"),
+                whiteHand = listOf("2C", "3H", "4S", "5C", "KH")
+            )
+        )
+    }
+
+    @Test
+    fun twoPairs() {
+        assertEquals(
+            Score(Hand.TWO_PAIRS, player = Black),
+            sut.pokerHands(
+                blackHand = listOf("2H", "2D", "3S", "3C", "KD"),
                 whiteHand = listOf("2C", "3H", "4S", "5C", "KH")
             )
         )
