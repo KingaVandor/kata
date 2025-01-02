@@ -1,9 +1,26 @@
 package com.example.shoppingbasket.services
 
-import com.example.shoppingbasket.services.Month.*
-import com.example.shoppingbasket.services.Rank.*
-import com.example.shoppingbasket.services.TennisPlayer.*
-import com.example.shoppingbasket.services.WeekDay.*
+import com.example.shoppingbasket.models.Direction
+import com.example.shoppingbasket.models.Door
+import com.example.shoppingbasket.models.Month.APRIL
+import com.example.shoppingbasket.models.Month.AUGUST
+import com.example.shoppingbasket.models.Month.DEC
+import com.example.shoppingbasket.models.Month.FEBRUARY
+import com.example.shoppingbasket.models.Month.JANUARY
+import com.example.shoppingbasket.models.Month.JULY
+import com.example.shoppingbasket.models.Month.JUNE
+import com.example.shoppingbasket.models.Month.MARCH
+import com.example.shoppingbasket.models.Month.MAY
+import com.example.shoppingbasket.models.Month.NOV
+import com.example.shoppingbasket.models.Month.OCT
+import com.example.shoppingbasket.models.Month.SEPT
+import com.example.shoppingbasket.models.Neighbours
+import com.example.shoppingbasket.models.TennisPlayer
+import com.example.shoppingbasket.models.TennisPlayer.A
+import com.example.shoppingbasket.models.TennisPlayer.B
+import com.example.shoppingbasket.models.TennisScore
+import com.example.shoppingbasket.models.WeekDay
+import com.example.shoppingbasket.models.WeekDay.SUNDAY
 import java.math.BigDecimal
 import java.math.RoundingMode
 import kotlin.math.abs
@@ -374,24 +391,6 @@ class KataService {
         return true
     }
 
-    fun anagrams(s: String): Set<String> {
-        return generator("", s).toSet()
-    }
-
-    private fun generator(starter: String, leftover: String): List<String> {
-        if (leftover.length <= 1) {
-            return listOf(starter + leftover)
-        }
-
-        val answer = mutableListOf<String>()
-        for (i in leftover.indices) {
-            val newStarter = starter + leftover[i].toString()
-            val newLeftover = leftover.replaceRange(IntRange(i, i), "")
-            answer.addAll(generator(newStarter, newLeftover))
-        }
-        return answer
-    }
-
     fun stats(arr: Array<Int>): Array<Double> {
         val min: Double = arr.minOf { it }.toDouble()
         val max: Double = arr.maxOf { it }.toDouble()
@@ -409,12 +408,6 @@ class KataService {
         }
 
         return closestToZero
-    }
-
-    inline fun <reified T : Enum<T>> T.next(): T {
-        val values = enumValues<T>()
-        val nextOrdinal = (ordinal + 1) % values.size
-        return values[nextOrdinal]
     }
 
     fun friday13(): WeekDay {
@@ -834,44 +827,6 @@ class KataService {
         return matches.size >= min
     }
 
-    private val calendar = mutableMapOf<Int, Map<Month, Map<Int, WeekDay>>>()
-
-    private val fiveDays = mutableMapOf<Int, List<Month>>()
-
-    private val noFiveDayWeekends = mutableListOf<Int>()
-
-    private fun generateCalendar() {
-        var currentWeekDay = MONDAY
-        for (year in 1900..2100) {
-            val monthsOfYear = mutableMapOf<Month, Map<Int, WeekDay>>()
-
-            for (month: Month in Month.entries) {
-                val daysOfMonth = mutableMapOf<Int, WeekDay>()
-                val days = if ((year % 4 == 0 && year != 1900) && (month == FEBRUARY)) 29 else month.days
-                for (day in 1..days) {
-                    daysOfMonth[day] = currentWeekDay
-                    currentWeekDay = currentWeekDay.next()
-                }
-                monthsOfYear[month] = daysOfMonth
-                if (hasFiveWeekends(daysOfMonth)) fiveDays.merge(year, listOf(month), Collection<Month>::plus)
-            }
-            if (fiveDays[year] == null) noFiveDayWeekends.add(year)
-        }
-    }
-
-    private fun hasFiveWeekends(daysOfMonth: Map<Int, WeekDay>): Boolean {
-        val fridays = daysOfMonth.values.filter { it == FRIDAY }.toList().size
-        val saturdays = daysOfMonth.values.filter { it == SATURDAY }.toList().size
-        val sundays = daysOfMonth.values.filter { it == SUNDAY }.toList().size
-        return fridays == 5 && saturdays == 5 && sundays == 5
-    }
-
-    fun fiveWeekends(): Pair<Int, Int> {
-        if (calendar.isEmpty()) generateCalendar()
-
-        return Pair(fiveDays.values.sumOf { it.size }, noFiveDayWeekends.size)
-    }
-
     fun largestCombinedNumber(nums: List<Int>): String {
         return generateCombos("", nums).toSet().maxOfOrNull { it.toInt() }.toString()
     }
@@ -888,229 +843,8 @@ class KataService {
         return combos
     }
 
-    private val changeSets = mutableSetOf<Map<Coins, Int>>()
-
-    fun calculateChange(sum: Int): Set<Map<Coins, Int>> {
-        changeSets.clear()
-        generateChange(emptyList(), sum)
-        return  changeSets
-
-    }
-
-    private fun generateChange(starter: List<Coins>, leftover: Int) {
-        if (leftover == 0) changeSets.add(starter.groupingBy { coin -> coin }.eachCount().toSortedMap() )
-        else {
-            for (coin in Coins.entries) {
-                if (coin.value > leftover) {
-                    continue
-                }
-                else {
-                    val newStarter = starter + coin
-                    val newLeftover = leftover - coin.value
-                    generateChange(newStarter, newLeftover)
-                }
-            }
-        }
-    }
-
-    val cards = mapOf(
-        '2' to TWO,
-        '3' to  THREE,
-        '4' to  FOUR,
-        '5' to  FIVE,
-        '6' to  SIX,
-        '7' to  SEVEN,
-        '8' to  EIGHT,
-        '9' to NINE,
-        'T' to  TEN,
-        'J' to  JACK,
-        'Q' to  QUEEN,
-        'K' to  KING,
-        'A' to  ACE,
-    )
-
-    fun pokerHands(blackHand: List<String>, whiteHand: List<String>): Score {
-        if (isTie(blackHand, whiteHand)) return Score(Hand.TIE)
-        val whiteScore = getHighest(whiteHand).copy(player = Player.White)
-        val blackScore = getHighest(blackHand).copy(player = Player.Black)
-
-        if (whiteScore.hand.ordinal > blackScore.hand.ordinal) return whiteScore
-        if (blackScore.hand.ordinal > whiteScore.hand.ordinal) return blackScore
-        return listOf(whiteScore, blackScore).maxByOrNull { it.value!! } ?: Score(Hand.TIE)
-    }
-
-    private fun getHighest(hand: List<String>): Score {
-        if(isFlush(hand)!= null && isStraight(hand)!= null) return isStraight(hand)!!.copy(hand = Hand.STRAIGHT_FLUSH)
-        if(isFour(hand) != null) return isFour(hand)!!
-        if(isFullHouse(hand) != null) return isFullHouse(hand)!!
-        if(isFlush(hand) != null) return isFlush(hand)!!
-        if(isStraight(hand)!= null) return isStraight(hand)!!
-        if(isThree(hand) != null) return isThree(hand)!!
-        if(isTwoPairs(hand) != null) return isTwoPairs(hand)!!
-        if(isPair(hand) != null) return isPair(hand)!!
-
-        val highestCard: Rank = hand.map { cards[it[0]] }.maxBy { it!!.ordinal }!!
-        return Score(Hand.HIGH, value = highestCard.value, rank = highestCard)
-    }
-
-    private fun isTie(blackHand: List<String>, whiteHand: List<String>): Boolean {
-
-        return blackHand.map { black -> black[0] }.containsAll(whiteHand.map { white -> white[0] })
-    }
-
-    private fun isFour(hand: List<String>): Score? {
-        val isFour = hand.groupingBy { it[0] }.eachCount().filter { it.value == 4 }.map { it.key }
-
-        return if (isFour.isEmpty()) null
-        else Score(hand = Hand.FOUR, rank = cards[isFour[0]], value = cards[isFour[0]]!!.value)
-    }
-
-    private fun  isFullHouse(hand: List<String>): Score? {
-        val hasThree = isThree(hand)
-        val hasPair = isPair(hand)
-
-        return if (hasThree != null && hasPair != null) Score(hand = Hand.FULL, rank = hasThree.rank, value = hasThree.value )
-        else null
-    }
-
-    private fun isFlush(hand: List<String>): Score? {
-        val isFlush = hand.groupingBy { it[1] }.eachCount().filter { it.value == 5 }
-        return if (isFlush.isEmpty()) null
-        else {
-            val highest: Rank = hand.mapNotNull { cards[it[0]] }.maxByOrNull { it.ordinal }!!
-            Score(Hand.FLUSH, value = highest.value, rank = highest)
-        }
-    }
-
-    private fun isThree(hand: List<String>): Score? {
-        val isThree = hand.groupingBy { it[0] }.eachCount().filter { it.value == 3 }.map { it.key }
-        return if (isThree.isEmpty()) null
-        else Score(hand = Hand.THREE, rank = cards[isThree[0]], value = cards[isThree[0]]!!.value * 3)
-    }
-
-    private fun isPair(hand: List<String>): Score? {
-        val pairs = getPairs(hand)
-        return if(pairs.size == 1) Score(Hand.PAIR, rank = cards[pairs.keys.first()], value = (cards[pairs.keys.first()]!!.value * 2))
-        else null
-    }
-
-    private fun isTwoPairs(hand: List<String>): Score? {
-        val pairs = getPairs(hand)
-        return if(pairs.size == 2) {
-            val highest: Rank = pairs.entries.mapNotNull { cards[it.key] }.maxByOrNull { it.ordinal }!!
-            Score(Hand.TWO_PAIRS, rank = highest, value = highest.value * 2)
-        }
-        else null
-    }
-
-    private fun getPairs(hand: List<String>): Map<Char, Int> {
-        return hand.groupingBy { it[0] }.eachCount().filter { it.value == 2 }
-    }
-
-    private fun isStraight(hand: List<String>): Score? {
-        val sorted = hand.map { it[0] }.sortedBy { it }
-        var consecutive = 0
-        var previousOrdinal = 0
-        for (card in sorted) {
-            val currentCard: Rank = cards[card]!!
-            val currentOrdinal = currentCard.ordinal
-            if (currentOrdinal == previousOrdinal + 1) consecutive++
-            previousOrdinal = currentOrdinal
-        }
-
-        return if(consecutive == 4) {
-            val highest: Rank = hand.mapNotNull { cards[it[0]] }.maxByOrNull { it.ordinal }!!
-            Score(Hand.STRAIGHT, value = highest.value, rank = highest)
-        } else null
-    }
-
-
 }
 
-enum class Hand {
-    TIE,
-    HIGH,
-    PAIR,
-    TWO_PAIRS,
-    THREE,
-    STRAIGHT,
-    FLUSH,
-    FULL,
-    FOUR,
-    STRAIGHT_FLUSH,
-
-
-}
-
-enum class Player() {
-    Black,
-    White
-}
-
-enum class Rank(val value: Int) {
-    TWO(2),
-    THREE(3),
-    FOUR(4),
-    FIVE(5),
-    SIX(6),
-    SEVEN(7),
-    EIGHT(8),
-    NINE(9),
-    TEN(10),
-    JACK(10),
-    QUEEN(10),
-    KING(10),
-    ACE(10),
-}
-
-data class Score(
-    val hand: Hand,
-    val rank: Rank? = null,
-    val value: Int? = null,
-    val player: Player? = null,
-    )
-
-
-enum class Coins(val value: Int) {
-    QUARTERS(25),
-    DIMES(10),
-    NICKELS(5),
-    PENNIES(1),
-
-}
-
-enum class WeekDay {
-    MONDAY, TUESDAY, WEDNESDAY, THURSDAY, FRIDAY, SATURDAY, SUNDAY
-}
-
-enum class Month(val days: Int) {
-    JANUARY(31), FEBRUARY(28), MARCH(31), APRIL(30), MAY(31), JUNE(30), JULY(31), AUGUST(31), SEPT(30), OCT(31), NOV(30), DEC(
-        31
-    )
-}
-
-enum class Door {
-    CLOSED, OPEN,
-}
-
-enum class Direction(val row: Int, val col: Int) {
-    UP(-1, 0), DOWN(1, 0), LEFT(0, -1), RIGHT(0, 1)
-}
-
-enum class Neighbours(val row: Int, val col: Int) {
-    TOP_LEFT(1, -1), TOP(1, 0), TOP_RIGHT(1, 1),
-    LEFT(0, -1), RIGHT(0, 1),
-    BOTTOM_LEFT(-1, -1), BOTTOM(-1, 0), BOTTOM_RIGHT(-1, 1),
-
-}
-
-enum class TennisPlayer {
-    A, B
-}
-
-enum class TennisScore {
-    LOVE, FIFTEEN, THIRTY, FORTY, ADVANTAGE, DEUCE, GAME
-}
 
 
 

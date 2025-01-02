@@ -1,8 +1,17 @@
 package com.example.shoppingbasket.services
 
-import com.example.shoppingbasket.services.Player.*
-import com.example.shoppingbasket.services.Rank.*
-import com.example.shoppingbasket.services.TennisPlayer.*
+import com.example.shoppingbasket.models.Door.CLOSED
+import com.example.shoppingbasket.models.Door.OPEN
+import com.example.shoppingbasket.models.TennisPlayer.A
+import com.example.shoppingbasket.models.TennisPlayer.B
+import com.example.shoppingbasket.models.TennisScore.ADVANTAGE
+import com.example.shoppingbasket.models.TennisScore.DEUCE
+import com.example.shoppingbasket.models.TennisScore.FIFTEEN
+import com.example.shoppingbasket.models.TennisScore.FORTY
+import com.example.shoppingbasket.models.TennisScore.GAME
+import com.example.shoppingbasket.models.TennisScore.LOVE
+import com.example.shoppingbasket.models.TennisScore.THIRTY
+import com.example.shoppingbasket.models.WeekDay
 import org.junit.jupiter.api.Assertions.assertArrayEquals
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertFalse
@@ -304,51 +313,6 @@ C   C
         assertEquals(true, sut.isBalanced("{()}[[{}]]"))
     }
 
-    @Test
-    fun anagramsBiro() {
-        val expected: Set<String> = setOf(
-            "biro", "bior", "brio", "broi", "boir", "bori",
-            "ibro", "ibor", "irbo", "irob", "iobr", "iorb",
-            "rbio", "rboi", "ribo", "riob", "roib", "robi",
-            "obir", "obri", "oibr", "oirb", "orbi", "orib",
-        )
-        val actual = sut.anagrams("biro")
-        assertTrue(expected.containsAll(actual))
-        assertTrue(actual.containsAll(expected))
-
-    }
-
-    @Test
-    fun anagramsA() {
-        val expected: Set<String> = setOf(
-            "a",
-        )
-        val actual = sut.anagrams("a")
-        assertTrue(expected.containsAll(actual))
-        assertTrue(actual.containsAll(expected))
-
-    }
-
-    @Test
-    fun anagramsAB() {
-        val expected: Set<String> = setOf(
-            "ab", "ba"
-        )
-        val actual = sut.anagrams("ab")
-        assertTrue(expected.containsAll(actual))
-        assertTrue(actual.containsAll(expected))
-    }
-
-    @Test
-    fun anagramsABC() {
-        val expected: Set<String> = setOf(
-            "abc", "acb", "bac", "bca", "cab", "cba",
-        )
-        val actual = sut.anagrams("abc")
-        assertTrue(expected.containsAll(actual))
-        assertTrue(actual.containsAll(expected))
-    }
-
 
     @Test
     fun stats() {
@@ -393,21 +357,21 @@ C   C
 
     @Test
     fun hundredDoors() {
-        assertEquals(Door.CLOSED, sut.hundredDoors(2))
-        assertEquals(Door.CLOSED, sut.hundredDoors(3))
-        assertEquals(Door.OPEN, sut.hundredDoors(4))
-        assertEquals(Door.OPEN, sut.hundredDoors(9))
-        assertEquals(Door.CLOSED, sut.hundredDoors(12))
-        assertEquals(Door.CLOSED, sut.hundredDoors(15))
-        assertEquals(Door.OPEN, sut.hundredDoors(16))
-        assertEquals(Door.OPEN, sut.hundredDoors(25))
-        assertEquals(Door.OPEN, sut.hundredDoors(36))
-        assertEquals(Door.CLOSED, sut.hundredDoors(42))
-        assertEquals(Door.OPEN, sut.hundredDoors(49))
-        assertEquals(Door.OPEN, sut.hundredDoors(64))
-        assertEquals(Door.OPEN, sut.hundredDoors(81))
-        assertEquals(Door.CLOSED, sut.hundredDoors(99))
-        assertEquals(Door.OPEN, sut.hundredDoors(100))
+        assertEquals(CLOSED, sut.hundredDoors(2))
+        assertEquals(CLOSED, sut.hundredDoors(3))
+        assertEquals(OPEN, sut.hundredDoors(4))
+        assertEquals(OPEN, sut.hundredDoors(9))
+        assertEquals(CLOSED, sut.hundredDoors(12))
+        assertEquals(CLOSED, sut.hundredDoors(15))
+        assertEquals(OPEN, sut.hundredDoors(16))
+        assertEquals(OPEN, sut.hundredDoors(25))
+        assertEquals(OPEN, sut.hundredDoors(36))
+        assertEquals(CLOSED, sut.hundredDoors(42))
+        assertEquals(OPEN, sut.hundredDoors(49))
+        assertEquals(OPEN, sut.hundredDoors(64))
+        assertEquals(OPEN, sut.hundredDoors(81))
+        assertEquals(CLOSED, sut.hundredDoors(99))
+        assertEquals(OPEN, sut.hundredDoors(100))
     }
 
     @Test
@@ -557,18 +521,18 @@ C   C
 
     @Test
     fun tennis() {
-        assertEquals(Pair(TennisScore.LOVE, null), sut.tennis(emptyList()))
+        assertEquals(Pair(LOVE, null), sut.tennis(emptyList()))
 
-        assertEquals(Pair(TennisScore.FIFTEEN, null), sut.tennis(listOf(A, B)))
-        assertEquals(Pair(TennisScore.THIRTY, null), sut.tennis(listOf(A, B, A, B)))
-        assertEquals(Pair(TennisScore.FORTY, null), sut.tennis(listOf(A, B, A, B, A, B)))
-        assertEquals(Pair(TennisScore.DEUCE, null), sut.tennis(listOf(A, B, A, B, A, B, A, B)))
+        assertEquals(Pair(FIFTEEN, null), sut.tennis(listOf(A, B)))
+        assertEquals(Pair(THIRTY, null), sut.tennis(listOf(A, B, A, B)))
+        assertEquals(Pair(FORTY, null), sut.tennis(listOf(A, B, A, B, A, B)))
+        assertEquals(Pair(DEUCE, null), sut.tennis(listOf(A, B, A, B, A, B, A, B)))
 
-        assertEquals(Pair(TennisScore.FIFTEEN, A), sut.tennis(listOf(A)))
-        assertEquals(Pair(TennisScore.THIRTY, A), sut.tennis(listOf(A, A, B)))
-        assertEquals(Pair(TennisScore.FORTY, B), sut.tennis(listOf(A, B, A, B, B)))
-        assertEquals(Pair(TennisScore.ADVANTAGE, A), sut.tennis(listOf(A, B, A, B, A, B, A)))
-        assertEquals(Pair(TennisScore.GAME, B), sut.tennis(listOf(A, B, A, B, A, B, A, B, B)))
+        assertEquals(Pair(FIFTEEN, A), sut.tennis(listOf(A)))
+        assertEquals(Pair(THIRTY, A), sut.tennis(listOf(A, A, B)))
+        assertEquals(Pair(FORTY, B), sut.tennis(listOf(A, B, A, B, B)))
+        assertEquals(Pair(ADVANTAGE, A), sut.tennis(listOf(A, B, A, B, A, B, A)))
+        assertEquals(Pair(GAME, B), sut.tennis(listOf(A, B, A, B, A, B, A, B, B)))
     }
 
     @Test
@@ -643,10 +607,6 @@ C   C
         assertEquals(2, sut.longestPrefix(listOf("pond", "pod", "new", "newest"), 2))
     }
 
-    @Test
-    fun fiveWeekends() {
-        assertEquals(Pair(201, 29), sut.fiveWeekends())
-    }
 
     @Test
     fun largestCombinedNumber() {
@@ -654,113 +614,6 @@ C   C
         assertEquals("56550", sut.largestCombinedNumber(listOf(5, 50, 56)))
         assertEquals("42423420", sut.largestCombinedNumber(listOf(420, 42, 423)))
     }
-
-    @Test
-    fun calculateChange() {
-        assertEquals(2, sut.calculateChange(5).size)
-        assertEquals(4, sut.calculateChange(10).size)
-        assertEquals(6, sut.calculateChange(15).size)
-        assertEquals(9, sut.calculateChange(20).size)
-        assertEquals(13, sut.calculateChange(25).size)
-        assertEquals(49, sut.calculateChange(50).size)
-    }
-
-    @Test
-    fun pokerHands() {
-
-        assertEquals(
-            Score(Hand.TIE),
-            sut.pokerHands(
-                blackHand = listOf("2H", "3D", "5S", "9C", "KD"),
-                whiteHand = listOf("2D", "3H", "5C", "9S", "KH")
-            )
-        )
-        assertEquals(
-            Score(Hand.STRAIGHT_FLUSH, rank = EIGHT, value = 8, player = Black),
-            sut.pokerHands(
-                blackHand = listOf("4H", "5H", "6H", "7H", "8H"),
-                whiteHand = listOf("2C", "3H", "4S", "8C", "AH")
-            )
-        )
-        assertEquals(
-            Score(Hand.STRAIGHT_FLUSH, rank = NINE, value = 9, player = White),
-            sut.pokerHands(
-                blackHand = listOf("4H", "5H", "6H", "7H", "8H"),
-                whiteHand = listOf("5H", "6H", "7H", "8H", "9H"),
-            )
-        )
-        assertEquals(
-            Score(Hand.FOUR, rank = TWO, value = 2, player = Black),
-            sut.pokerHands(
-                blackHand = listOf("2H", "2D", "2S", "2C", "5D"),
-                whiteHand = listOf("2C", "3H", "4S", "8C", "AH")
-            )
-        )
-        assertEquals(
-            Score(Hand.FULL, rank = TWO, value = 6, player = Black),
-            sut.pokerHands(
-                blackHand = listOf("2H", "2D", "2S", "5C", "5D"),
-                whiteHand = listOf("2C", "3H", "4S", "8C", "AH")
-            )
-        )
-        assertEquals(
-            Score(Hand.FLUSH, rank = KING, value = 10, player = Black),
-            sut.pokerHands(
-                blackHand = listOf("2H", "3H", "6H", "QH", "KH"),
-                whiteHand = listOf("2C", "3H", "4S", "8C", "AH")
-            )
-        )
-        assertEquals(
-            Score(Hand.STRAIGHT, rank = EIGHT, value = 8, player = Black),
-            sut.pokerHands(
-                blackHand = listOf("4H", "5D", "6S", "7C", "8D"),
-                whiteHand = listOf("2C", "3H", "4S", "8C", "AH")
-            )
-        )
-        assertEquals(
-            Score(Hand.THREE, rank = TWO, value = 6, player = Black),
-            sut.pokerHands(
-                blackHand = listOf("2H", "2D", "2S", "9C", "KD"),
-                whiteHand = listOf("2C", "3H", "4S", "5C", "KH")
-            )
-        )
-        assertEquals(
-            Score(Hand.TWO_PAIRS, rank = THREE, value = 6, player = Black),
-            sut.pokerHands(
-                blackHand = listOf("2H", "2D", "3S", "3C", "KD"),
-                whiteHand = listOf("2C", "3H", "4S", "5C", "KH")
-            )
-        )
-
-        assertEquals(
-            Score(Hand.PAIR, rank = TWO, value = 4, player = Black),
-            sut.pokerHands(
-                blackHand = listOf("2H", "2D", "3S", "5C", "KD"),
-                whiteHand = listOf("2C", "3H", "4S", "5C", "KH")
-            )
-        )
-
-        assertEquals(
-            Score(Hand.HIGH, rank = KING, value = 10, player = White),
-            sut.pokerHands(
-                blackHand = listOf("2H", "3D", "6S", "8C", "QD"),
-                whiteHand = listOf("2C", "3H", "4S", "5C", "KH")
-            )
-        )
-    }
-
-    @Test
-    fun twoPairs() {
-        assertEquals(
-            Score(Hand.TWO_PAIRS, player = Black),
-            sut.pokerHands(
-                blackHand = listOf("2H", "2D", "3S", "3C", "KD"),
-                whiteHand = listOf("2C", "3H", "4S", "5C", "KH")
-            )
-        )
-    }
-
-
 }
 
 
@@ -814,7 +667,7 @@ C   C
 //Number Chains         -- done
 //Number Names          -- done
 //Phone Numbers         -- done
-//Poker Hands
+//Poker Hands           -- done
 //Prime Factors         -- done
 //Print Diamond         -- done
 //Recently Used List    -- done
