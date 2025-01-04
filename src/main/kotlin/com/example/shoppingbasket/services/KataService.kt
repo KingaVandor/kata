@@ -466,7 +466,7 @@ class KataService {
         return answer
     }
 
-    var finalState = emptyMap<Int, Door>().toMutableMap()
+    private var finalState = emptyMap<Int, Door>().toMutableMap()
 
     fun hundredDoors(doorNum: Int): Door? {
         if (finalState.isEmpty()) calculateDoors()
@@ -843,6 +843,23 @@ class KataService {
         return combos
     }
 
+    fun generateRandom(min: Int, max: Int): Int {
+        return min.until(max).random()
+    }
+
+    fun shuffleArray(arr: IntArray): IntArray {
+        val list = arr.toMutableList()
+        val size = arr.size
+        for (i in arr.indices) {
+            val j = generateRandom(i, size)
+            val listI = list[i]
+            val listJ = list[j]
+            list[i] = listJ
+            list[j] = listI
+        }
+
+        return list.toIntArray()
+    }
 }
 
 

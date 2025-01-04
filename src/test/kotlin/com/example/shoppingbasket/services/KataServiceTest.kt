@@ -16,6 +16,7 @@ import org.junit.jupiter.api.Assertions.assertArrayEquals
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertFalse
 import kotlin.test.Test
+import kotlin.test.assertNotEquals
 import kotlin.test.assertTrue
 
 
@@ -614,16 +615,42 @@ C   C
         assertEquals("56550", sut.largestCombinedNumber(listOf(5, 50, 56)))
         assertEquals("42423420", sut.largestCombinedNumber(listOf(420, 42, 423)))
     }
+
+    @Test
+    fun generateRandom() {
+        val min = 100
+        val max = 200
+        val first: Int = sut.generateRandom(min, max)
+        val second: Int= sut.generateRandom(min, max)
+        val third: Int = sut.generateRandom(min, max)
+        println(first)
+        println(second)
+        println(third)
+
+        assertTrue(first in min..<max)
+        assertTrue(second in min..<max)
+        assertTrue(third in min..<max)
+        assertTrue(listOf(first, second, third).distinct().size > 1)
+    }
+
+    @Test
+    fun shuffleArray() {
+        val arr = arrayOf(1,2,3,4,5,6,7,8,9,10).toIntArray()
+        val first = sut.shuffleArray(arr)
+        val second = sut.shuffleArray(arr)
+        val third = sut.shuffleArray(arr)
+        println(first.contentToString())
+        println(second.contentToString())
+        println(third.contentToString())
+
+      assertNotEquals(arr.contentToString(), first.contentToString())
+      assertNotEquals(arr.contentToString(), second.contentToString())
+      assertNotEquals(arr.contentToString(), third.contentToString())
+      assertTrue(listOf(first.contentToString(), second.contentToString(), third.contentToString()).distinct().size > 1)
+    }
 }
 
 
-//There are 6 ways to make change for 15 cents:
-//o) A dime and a nickel;
-//o) A dime and 5 pennies;
-//o) 3 nickels;
-//o) 2 nickels and 5 pennies;
-//o) A nickel and 10 pennies;
-//o) 15 pennies.
 
 
 //100 doors             -- done
@@ -631,7 +658,7 @@ C   C
 //ABC Problem           -- done
 //Align Columns
 //Anagrams              -- done
-//Array Shuffle
+//Array Shuffle         -- done
 //Balanced Parentheses  -- done
 //Best Shuffle
 //Bowling Game
@@ -681,7 +708,7 @@ C   C
 //Tiny Maze             -- done
 //Unsplice              -- done
 //Vending Machine
-//Wonderland Number
+//Wonderland Number     -- done
 //Word Wrap             -- done
 //Yatzy
 //Yatzy Cutdown
