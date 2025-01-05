@@ -648,6 +648,12 @@ C   C
       assertNotEquals(arr.contentToString(), third.contentToString())
       assertTrue(listOf(first.contentToString(), second.contentToString(), third.contentToString()).distinct().size > 1)
     }
+
+    @Test
+    fun levenshtein() {
+        assertEquals(3, sut.levenshtein("kitten", "sitting"))
+        assertEquals(8, sut.levenshtein("rosettacode", "raisethysword"))
+  }
 }
 
 
@@ -684,7 +690,7 @@ C   C
 //Knight's Tour
 //LCD Digits            -- done
 //Leap Years            -- done
-//Levenshtein Distance
+//Levenshtein Distance  -- done
 //Longest Common Prefix -- done
 //Magic Square          -- done
 //Mars Rover

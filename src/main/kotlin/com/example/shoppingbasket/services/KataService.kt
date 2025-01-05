@@ -860,6 +860,24 @@ class KataService {
 
         return list.toIntArray()
     }
+
+    fun levenshtein(str1: String, str2: String): Int {
+        return calcLevenshtein(str1, str2, str1.length, str2.length)
+    }
+
+    private fun calcLevenshtein(str1: String, str2: String, len1: Int, len2: Int): Int {
+        if (len1 == 0) return len2
+        if (len2 == 0) return len1
+
+        if (str1[len1-1] == str2[len2-1]) return calcLevenshtein(str1, str2, len1-1, len2-1)
+
+        return 1 + minOf(
+            calcLevenshtein(str1, str2, len1, len2-1),
+            minOf(
+                calcLevenshtein(str1, str2, len1-1, len2),
+                calcLevenshtein(str1, str2, len1-1, len2-1))
+        )
+    }
 }
 
 
