@@ -866,18 +866,43 @@ class KataService {
     }
 
     private fun calcLevenshtein(str1: String, str2: String, len1: Int, len2: Int): Int {
-        if (len1 == 0) return len2
-        if (len2 == 0) return len1
+        return if (len1 == 0) len2
+        else if (len2 == 0) return len1
 
-        if (str1[len1-1] == str2[len2-1]) return calcLevenshtein(str1, str2, len1-1, len2-1)
+        else if (str1[len1-1] == str2[len2-1]) return calcLevenshtein(str1, str2, len1-1, len2-1)
 
-        return 1 + minOf(
+        else 1 + minOf(
             calcLevenshtein(str1, str2, len1, len2-1),
             minOf(
                 calcLevenshtein(str1, str2, len1-1, len2),
-                calcLevenshtein(str1, str2, len1-1, len2-1))
+                calcLevenshtein(str1, str2, len1-1, len2-1)
+            )
         )
     }
+
+
+    fun fizzbuzz(num: Int): String {
+        return if (num % 5 == 0 && num % 3 == 0) "FizzBuzz"
+        else if (num % 5 == 0) "Buzz"
+        else if (num % 3 == 0) "Fizz"
+        else ""
+    }
+
+    fun fizzBuzzPlus(num: Int): String {
+        return if (isFizzPlus(num) && isBuzzPlus(num)) "FizzBuzz"
+        else if (isBuzzPlus(num)) "Buzz"
+        else if (isFizzPlus(num)) "Fizz"
+        else ""
+    }
+
+    private fun isFizzPlus(num: Int): Boolean {
+        return num % 3 == 0 || num.toString().contains("3".toRegex())
+    }
+
+    private fun isBuzzPlus(num: Int): Boolean {
+        return num % 5 == 0 || num.toString().contains("5".toRegex())
+    }
+
 }
 
 

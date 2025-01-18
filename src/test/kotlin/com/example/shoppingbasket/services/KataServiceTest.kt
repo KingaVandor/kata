@@ -654,6 +654,26 @@ C   C
         assertEquals(3, sut.levenshtein("kitten", "sitting"))
         assertEquals(8, sut.levenshtein("rosettacode", "raisethysword"))
   }
+
+
+    @Test
+    fun fizzbuzz() {
+        assertEquals("FizzBuzz", sut.fizzbuzz(195))
+        assertEquals("Fizz", sut.fizzbuzz(81))
+        assertEquals("Buzz", sut.fizzbuzz(70))
+        assertEquals("", sut.fizzbuzz(56))
+    }
+
+    @Test
+    fun fizzBuzzPlus() {
+        assertEquals("FizzBuzz", sut.fizzBuzzPlus(195))
+        assertEquals("Fizz", sut.fizzBuzzPlus(81))
+        assertEquals("Buzz", sut.fizzBuzzPlus(70))
+        assertEquals("Buzz", sut.fizzBuzzPlus(56))
+        assertEquals("Fizz", sut.fizzBuzzPlus(13))
+        assertEquals("FizzBuzz", sut.fizzBuzzPlus(53))
+        assertEquals("", sut.fizzBuzzPlus(19))
+    }
 }
 
 
@@ -672,30 +692,30 @@ C   C
 //Closest To Zero       -- done
 //Combined Number       -- done
 //Count Coins           -- done (sorta)
-//Diff Selector
+//Diff Selector wont
 //Diversion
-//Eight Queens
+//Eight Queens ?
 //Filename Range
 //Fisher-Yates Shuffle
 //Five Weekends         -- done
 //Fizz Buzz             -- done
-//Fizz Buzz Plus
+//Fizz Buzz Plus        -- done
 //Friday 13th           -- done
 //Game of Life
-//Gray Code
-//Group Neighbours
+//Gray Code wont
+//Group Neighbours wont
 //Haiku Review
 //Harry Potter
 //ISBN                  -- done
-//Knight's Tour
+//Knight's Tour ?
 //LCD Digits            -- done
 //Leap Years            -- done
 //Levenshtein Distance  -- done
 //Longest Common Prefix -- done
 //Magic Square          -- done
-//Mars Rover
+//Mars Rover ?
 //Mine Field            -- done
-//Mine Sweeper
+//Mine Sweeper ?
 //Monty Hall
 //Number Chains         -- done
 //Number Names          -- done
@@ -707,13 +727,13 @@ C   C
 //Remove Duplicates     -- done
 //Reordering            -- done
 //Reverse Roman         -- done
-//Reversi
+//Reversi ?
 //Roman Numerals        -- done
 //Saddle Points         -- done
 //Tennis                -- done
 //Tiny Maze             -- done
 //Unsplice              -- done
-//Vending Machine
+//Vending Machine ?
 //Wonderland Number     -- done
 //Word Wrap             -- done
 //Yatzy
