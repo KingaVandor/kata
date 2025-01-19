@@ -861,6 +861,10 @@ class KataService {
         return list.toIntArray()
     }
 
+    fun shuffleArrayFisherYates(arr: IntArray): IntArray {
+        return arr.toList().shuffled().toIntArray()
+    }
+
     fun levenshtein(str1: String, str2: String): Int {
         return calcLevenshtein(str1, str2, str1.length, str2.length)
     }

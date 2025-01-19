@@ -650,6 +650,22 @@ C   C
     }
 
     @Test
+    fun shuffleArrayFisherYates() {
+        val arr = arrayOf(1,2,3,4,5,6,7,8,9,10).toIntArray()
+        val first = sut.shuffleArrayFisherYates(arr)
+        val second = sut.shuffleArrayFisherYates(arr)
+        val third = sut.shuffleArrayFisherYates(arr)
+        println(first.contentToString())
+        println(second.contentToString())
+        println(third.contentToString())
+
+        assertNotEquals(arr.contentToString(), first.contentToString())
+        assertNotEquals(arr.contentToString(), second.contentToString())
+        assertNotEquals(arr.contentToString(), third.contentToString())
+        assertTrue(listOf(first.contentToString(), second.contentToString(), third.contentToString()).distinct().size > 1)
+    }
+
+    @Test
     fun levenshtein() {
         assertEquals(3, sut.levenshtein("kitten", "sitting"))
         assertEquals(8, sut.levenshtein("rosettacode", "raisethysword"))
@@ -696,7 +712,7 @@ C   C
 //Diversion
 //Eight Queens ?
 //Filename Range
-//Fisher-Yates Shuffle
+//Fisher-Yates Shuffle  -- done
 //Five Weekends         -- done
 //Fizz Buzz             -- done
 //Fizz Buzz Plus        -- done
