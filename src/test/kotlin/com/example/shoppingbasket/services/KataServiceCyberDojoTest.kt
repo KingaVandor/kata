@@ -20,8 +20,8 @@ import kotlin.test.assertNotEquals
 import kotlin.test.assertTrue
 
 
-class KataServiceTest {
-    private val sut = KataService()
+class KataServiceCyberDojoTest {
+    private val sut = KataServiceCyberDojo()
 
     @Test
     fun multiplicationTable() {

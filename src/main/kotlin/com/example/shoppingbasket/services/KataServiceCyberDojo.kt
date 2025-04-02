@@ -25,7 +25,7 @@ import java.math.BigDecimal
 import java.math.RoundingMode
 import kotlin.math.abs
 
-class KataService {
+class KataServiceCyberDojo {
     fun multiplicationTable(size: Int): Array<IntArray> =
         (1..size).map { i ->
             (1..size).map { j ->
