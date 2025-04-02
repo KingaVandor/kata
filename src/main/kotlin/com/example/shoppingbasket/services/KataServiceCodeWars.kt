@@ -1,33 +1,53 @@
 package com.example.shoppingbasket.services
 
-import com.example.shoppingbasket.models.Direction
-import com.example.shoppingbasket.models.Door
-import com.example.shoppingbasket.models.Month.APRIL
-import com.example.shoppingbasket.models.Month.AUGUST
-import com.example.shoppingbasket.models.Month.DEC
-import com.example.shoppingbasket.models.Month.FEBRUARY
-import com.example.shoppingbasket.models.Month.JANUARY
-import com.example.shoppingbasket.models.Month.JULY
-import com.example.shoppingbasket.models.Month.JUNE
-import com.example.shoppingbasket.models.Month.MARCH
-import com.example.shoppingbasket.models.Month.MAY
-import com.example.shoppingbasket.models.Month.NOV
-import com.example.shoppingbasket.models.Month.OCT
-import com.example.shoppingbasket.models.Month.SEPT
-import com.example.shoppingbasket.models.Neighbours
-import com.example.shoppingbasket.models.TennisPlayer
-import com.example.shoppingbasket.models.TennisPlayer.A
-import com.example.shoppingbasket.models.TennisPlayer.B
-import com.example.shoppingbasket.models.TennisScore
-import com.example.shoppingbasket.models.WeekDay
-import com.example.shoppingbasket.models.WeekDay.SUNDAY
-import java.math.BigDecimal
-import java.math.RoundingMode
-import kotlin.math.abs
+import java.time.LocalDate
+import java.time.LocalDateTime
+import java.time.LocalTime
+import java.time.ZoneId
+
 
 class KataServiceCodeWars {
 
+    fun catchTheBus(busTimes: Pair<String, String>, boyTimes: Pair<String, String>): Double {
+        val busStart = getTimeStamp(busTimes.first)
+        val boyStart = getTimeStamp(boyTimes.first)
+        val boyEnd = getTimeStamp(boyTimes.second)
+        val busEnd = getTimeStamp(busTimes.second)
 
+        var boyCurrent = boyStart
+        var missed = 0
+        var counter = 0
+
+        while (boyCurrent <= boyEnd) {
+            var busCurrent = busStart
+
+            while (busCurrent <= busEnd) {
+                if (boyCurrent > busCurrent) {
+                    missed ++
+                }
+                busCurrent += 10
+                counter ++
+            }
+            boyCurrent += 10
+        }
+
+        println("missed: $missed")
+
+        val percent: Double = ((missed.toDouble() * 100)/ counter.toDouble())
+        println("percent: $percent")
+
+
+        return  percent
+    }
+
+    private  fun getTimeStamp(inputTime: String): Long {
+        val time = if (inputTime.length == 8 ) inputTime.dropLast(3)
+        else "0" + inputTime.dropLast(3)
+
+        var dateTime = LocalDateTime.of(LocalDate.now(), LocalTime.parse(time))
+        if (inputTime.contains("PM")) dateTime = dateTime.plusHours(12)
+        return dateTime.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli()
+    }
 }
 
 
