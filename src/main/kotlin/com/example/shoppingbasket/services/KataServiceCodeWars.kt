@@ -1,5 +1,7 @@
 package com.example.shoppingbasket.services
 
+import java.math.BigDecimal
+import java.math.RoundingMode
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.LocalTime
@@ -9,8 +11,8 @@ import java.time.ZoneId
 class KataServiceCodeWars {
 
     fun catchTheBus(busTimes: Pair<String, String>, boyTimes: Pair<String, String>): Double {
-        val busStart = getTimeStamp(busTimes.first)
         val boyStart = getTimeStamp(boyTimes.first)
+        val busStart = getTimeStamp(busTimes.first)
         val boyEnd = getTimeStamp(boyTimes.second)
         val busEnd = getTimeStamp(busTimes.second)
 
@@ -31,13 +33,7 @@ class KataServiceCodeWars {
             boyCurrent += 10
         }
 
-        println("missed: $missed")
-
-        val percent: Double = ((missed.toDouble() * 100)/ counter.toDouble())
-        println("percent: $percent")
-
-
-        return  percent
+        return   BigDecimal(missed.toDouble() * 100 /counter.toDouble()).setScale(3, RoundingMode.HALF_EVEN).toDouble()
     }
 
     private  fun getTimeStamp(inputTime: String): Long {
