@@ -44,7 +44,23 @@ class KataServiceCodeWars {
         if (inputTime.contains("PM")) dateTime = dateTime.plusHours(12)
         return dateTime.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli()
     }
+
+    fun incrementString(str: String) : String {
+        println("input: $str")
+        val alphabet = "[^0-9]".toRegex()
+        val lastBit = str.split(alphabet).last()
+
+        return if (lastBit.isEmpty() ) str + "1"
+        else {
+            val endNum = lastBit.toInt() + 1
+            str.dropLast(lastBit.length) + lastBit.dropLast(endNum.toString().length) + endNum
+        }
+    }
 }
+
+//val info = "28 + 32 * 2 / 64 = 29"
+//val regex = "\\D+".toRegex()
+//assertThat(info.split(regex)).containsExactly("28", "32", "2", "64", "29")
 
 
 

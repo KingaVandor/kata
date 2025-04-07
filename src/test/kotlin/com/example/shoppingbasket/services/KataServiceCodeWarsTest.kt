@@ -25,5 +25,29 @@ class KataServiceCodeWarsTest {
         assertEquals(0.0, sut.catchTheBus("4:53 PM" to "5:00 PM", "4:47 PM" to "4:52 PM"), margin)
         assertEquals(100.0, sut.catchTheBus("9:22 AM" to "9:23 AM", "9:24 AM" to "9:44 AM"), margin)
     }
+
+    @Test
+    fun incrementStringTests() {
+        doTest("", "1")
+        doTest("010", "011")
+        doTest("999", "1000")
+        doTest("foobar000", "foobar001")
+        doTest("foobar999", "foobar1000")
+        doTest("foobar00999", "foobar01000")
+        doTest("foo", "foo1")
+        doTest("foobar001", "foobar002")
+        doTest("fo99obar99", "fo99obar100")
+        doTest("foobar1", "foobar2")
+        doTest("1", "2")
+        doTest("", "1")
+        doTest("009", "010")
+    }
+
+    private fun doTest(input: String, expected: String) {
+        val message = String.format("for input: \"%s\"\n", input)
+        val actual_ = sut.incrementString(input)
+        assertEquals(expected, actual_, message)
+    }
 }
+
 
