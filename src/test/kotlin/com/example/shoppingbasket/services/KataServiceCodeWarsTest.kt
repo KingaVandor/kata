@@ -48,6 +48,17 @@ class KataServiceCodeWarsTest {
         val actual_ = sut.incrementString(input)
         assertEquals(expected, actual_, message)
     }
+
+    @Test
+    fun testFixed() {
+        assertEquals("000000", sut.rgb(0, 0, 0))
+        assertEquals("000000", sut.rgb(0, 0, -20))
+        assertEquals("FFFFFF", sut.rgb(300,255,255))
+        assertEquals("ADFF2F", sut.rgb(173,255,47))
+        assertEquals("9400D3", sut.rgb(148, 0, 211))
+    }
 }
+
+
 
 

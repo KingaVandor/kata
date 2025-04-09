@@ -25,19 +25,19 @@ class KataServiceCodeWars {
 
             while (busCurrent <= busEnd) {
                 if (boyCurrent > busCurrent) {
-                    missed ++
+                    missed++
                 }
                 busCurrent += 10
-                counter ++
+                counter++
             }
             boyCurrent += 10
         }
 
-        return   BigDecimal(missed.toDouble() * 100 /counter.toDouble()).setScale(3, RoundingMode.HALF_EVEN).toDouble()
+        return BigDecimal(missed.toDouble() * 100 / counter.toDouble()).setScale(3, RoundingMode.HALF_EVEN).toDouble()
     }
 
-    private  fun getTimeStamp(inputTime: String): Long {
-        val time = if (inputTime.length == 8 ) inputTime.dropLast(3)
+    private fun getTimeStamp(inputTime: String): Long {
+        val time = if (inputTime.length == 8) inputTime.dropLast(3)
         else "0" + inputTime.dropLast(3)
 
         var dateTime = LocalDateTime.of(LocalDate.now(), LocalTime.parse(time))
@@ -45,22 +45,33 @@ class KataServiceCodeWars {
         return dateTime.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli()
     }
 
-    fun incrementString(str: String) : String {
+    fun incrementString(str: String): String {
         println("input: $str")
         val alphabet = "[^0-9]".toRegex()
         val lastBit = str.split(alphabet).last()
 
-        return if (lastBit.isEmpty() ) str + "1"
+        return if (lastBit.isEmpty()) str + "1"
         else {
             val endNum = lastBit.toInt() + 1
             str.dropLast(lastBit.length) + lastBit.dropLast(endNum.toString().length) + endNum
         }
     }
+
+    fun rgb(r: Int, g: Int, b: Int): String {
+        return r.scope().convertNumToHex() + g.scope().convertNumToHex() + b.scope().convertNumToHex()
+    }
+
+    private fun Int.scope(): Int {
+        return if (this < 0) 0
+        else if (this > 255) 255
+        else this
+    }
+
+    private fun Int.convertNumToHex(): String {
+        return this.toString(16).uppercase().padStart(2, '0')
+    }
 }
 
-//val info = "28 + 32 * 2 / 64 = 29"
-//val regex = "\\D+".toRegex()
-//assertThat(info.split(regex)).containsExactly("28", "32", "2", "64", "29")
 
 
 
