@@ -61,6 +61,24 @@ class KataServiceCodeWars {
         return r.scope().convertNumToHex() + g.scope().convertNumToHex() + b.scope().convertNumToHex()
     }
 
+    private val timeUnitMap = mapOf("year" to 31536000, "day" to 86400, "hour" to 3600, "minute" to 60, "second" to 1)
+    fun formatDuration(seconds: Int): String {
+        var remainder = seconds
+        val values = timeUnitMap.entries.mapNotNull {
+            val times = remainder / it.value
+            if (times == 0) null
+            else {
+                val plural = if (times > 1) "s" else ""
+                remainder %= it.value
+                "$times ${it.key}$plural"
+            }
+        }.joinToString(", ")
+
+        val lastComma = values.lastIndexOf(',')
+        return if (lastComma != -1) values.replaceRange(lastComma, lastComma + 1, " and")
+        else values
+    }
+
     private fun Int.scope(): Int {
         return if (this < 0) 0
         else if (this > 255) 255

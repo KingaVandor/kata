@@ -53,9 +53,18 @@ class KataServiceCodeWarsTest {
     fun testFixed() {
         assertEquals("000000", sut.rgb(0, 0, 0))
         assertEquals("000000", sut.rgb(0, 0, -20))
-        assertEquals("FFFFFF", sut.rgb(300,255,255))
-        assertEquals("ADFF2F", sut.rgb(173,255,47))
+        assertEquals("FFFFFF", sut.rgb(300, 255, 255))
+        assertEquals("ADFF2F", sut.rgb(173, 255, 47))
         assertEquals("9400D3", sut.rgb(148, 0, 211))
+    }
+
+    @Test
+    fun testFormatDurationExamples() {
+        assertEquals("1 second", sut.formatDuration(1))
+        assertEquals("1 minute and 2 seconds", sut.formatDuration(62))
+        assertEquals("2 minutes", sut.formatDuration(120))
+        assertEquals("1 hour", sut.formatDuration(3600))
+        assertEquals("1 hour, 1 minute and 2 seconds", sut.formatDuration(3662))
     }
 }
 
