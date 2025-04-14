@@ -79,6 +79,17 @@ class KataServiceCodeWars {
         else values
     }
 
+    fun stripComments(input: String, markers: CharArray): String {
+        return input.split("\n")
+            .map { line ->
+                markers.map { marker ->
+                    line.replaceAfter(marker, "")
+                        .replace(marker.toString(), "", true)
+                        .trim()
+                }.minOf { it }
+            }.joinToString("\n")
+    }
+
     private fun Int.scope(): Int {
         return if (this < 0) 0
         else if (this > 255) 255

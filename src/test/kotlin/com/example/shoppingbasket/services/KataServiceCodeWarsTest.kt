@@ -66,6 +66,12 @@ class KataServiceCodeWarsTest {
         assertEquals("1 hour", sut.formatDuration(3600))
         assertEquals("1 hour, 1 minute and 2 seconds", sut.formatDuration(3662))
     }
+
+    @Test
+    fun testStripComments() {
+        assertEquals("apples, plums\npears\noranges", sut.stripComments("apples, plums % and bananas\npears\noranges !applesauce", charArrayOf('%', '!')))
+        assertEquals("Q\nu\ne", sut.stripComments("Q @b\nu\ne -e f g", charArrayOf('@', '-')))
+    }
 }
 
 
