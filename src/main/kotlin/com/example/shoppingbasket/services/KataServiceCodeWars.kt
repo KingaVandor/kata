@@ -6,6 +6,7 @@ import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.LocalTime
 import java.time.ZoneId
+import kotlin.math.absoluteValue
 
 
 class KataServiceCodeWars {
@@ -88,6 +89,35 @@ class KataServiceCodeWars {
                         .trim()
                 }.minOf { it }
             }.joinToString("\n")
+    }
+
+    fun sumOfDivided(numbers: IntArray): String {
+        val primesMap = emptyMap<Int, Int>().toMutableMap()
+        numbers
+            .map { Pair(getPrimes(it), it) }
+            .forEach { entry ->
+                entry.first.forEach { prime ->
+                    if (primesMap[prime] == null) primesMap[prime] = entry.second
+                    else {
+                        primesMap[prime] = primesMap[prime]!! + entry.second
+                    }
+                }
+            }
+        return primesMap.entries.sortedBy { it.key }.map { "(${it.key} ${it.value})" }.toList().joinToString("")
+    }
+
+    private fun getPrimes(num: Int): Set<Int> {
+        if (num == 1 || num == -1) return emptySet()
+        val primeSet = emptySet<Int>().toMutableSet()
+        var remainder = num
+        var divisor = 2
+        while (remainder.absoluteValue > 1) {
+            if (remainder % divisor == 0) {
+                primeSet.add(divisor)
+                remainder /= divisor
+            } else divisor++
+        }
+        return primeSet
     }
 
     private fun Int.scope(): Int {

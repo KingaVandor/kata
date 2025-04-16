@@ -72,6 +72,18 @@ class KataServiceCodeWarsTest {
         assertEquals("apples, plums\npears\noranges", sut.stripComments("apples, plums % and bananas\npears\noranges !applesauce", charArrayOf('%', '!')))
         assertEquals("Q\nu\ne", sut.stripComments("Q @b\nu\ne -e f g", charArrayOf('@', '-')))
     }
+
+    @Test
+    fun testSumOfDivided() {
+        assertEquals("", sut.sumOfDivided(intArrayOf()))
+        assertEquals("(2 12)(3 27)(5 15)", sut.sumOfDivided(intArrayOf(12, 15)))
+        assertEquals("(2 54)(3 135)(5 90)(7 21)", sut.sumOfDivided(intArrayOf(15, 21, 24, 30, 45)))
+        assertEquals("(2 1032)(3 453)(5 310)(7 126)(11 110)(17 204)(29 116)(41 123)(59 118)(79 158)(107 107)",
+            sut.sumOfDivided(intArrayOf(107, 158, 204, 100, 118, 123, 126, 110, 116, 100)))
+        assertEquals("(2 12620)(3 4530)(5 12620)(7 1260)(11 1100)(17 2040)(29 1160)(41 1230)(59 1180)(79 1580)(107 1070)",
+            sut.sumOfDivided(intArrayOf(1070, 1580, 2040, 1000, 1180, 1230, 1260, 1100, 1160, 1000)))
+    }
+
 }
 
 
